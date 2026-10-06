@@ -4,15 +4,12 @@
     "jsr:@ayk/lint-import-order@*": "0.1.0",
     "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
-    "jsr:@std/bytes@^1.0.6": "1.0.6",
-    "jsr:@std/cli@*": "1.0.30",
     "jsr:@std/dotenv@~0.225.7": "0.225.7",
     "jsr:@std/fs@^1.0.24": "1.0.24",
     "jsr:@std/internal@^1.0.12": "1.0.14",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/path@*": "1.1.5",
     "jsr:@std/path@^1.1.5": "1.1.5",
-    "jsr:@std/streams@*": "1.1.1",
     "jsr:@std/testing@*": "1.0.19"
   },
   "jsr": {
@@ -24,12 +21,6 @@
       "dependencies": [
         "jsr:@std/internal@^1.0.12"
       ]
-    },
-    "@std/bytes@1.0.6": {
-      "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
-    },
-    "@std/cli@1.0.30": {
-      "integrity": "769446536522d0417d7127ebcabcafac1ab0ce6766d0eb3fca1d36326fe98d13"
     },
     "@std/dotenv@0.225.7": {
       "integrity": "11d8db03ca4ad5aba9eba809f2e8058b2a4f320b7b09fea4b360e162928329e3"
@@ -49,12 +40,6 @@
         "jsr:@std/internal@^1.0.14"
       ]
     },
-    "@std/streams@1.1.1": {
-      "integrity": "92556d350e537e9dce527a6d08f6f15be3ff65e656079dea69d15252187c7613",
-      "dependencies": [
-        "jsr:@std/bytes"
-      ]
-    },
     "@std/testing@1.0.19": {
       "integrity": "f4236172365b216728dc3cc8b5e80a9f4c33083d1e4ede7613d5b25b4014898e",
       "dependencies": [
@@ -67,13 +52,6 @@
   },
   "workspace": {
     "members": {
-      "experimental/agent": {
-        "dependencies": [
-          "jsr:@std/cli@*",
-          "jsr:@std/dotenv@*",
-          "jsr:@std/streams@*"
-        ]
-      },
       "experimental/store": {
         "dependencies": [
           "jsr:@std/assert@*",

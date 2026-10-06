@@ -1,4 +1,4 @@
-/** @jsxImportSource @cutout/jsx */
+/** @jsxImportSource @cutout/kernel */
 
 import { assertSnapshot } from "@std/testing/snapshot";
 import { rawText } from "./rawText.ts";

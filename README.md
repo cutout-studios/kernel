@@ -1,13 +1,13 @@
 <div align="center">
 
-<h1>✂️ The Cutout Toolbox 🧰</h1>
+<h1>✂️ The Cutout Kernel 🌱</h1>
 
 [![Maintainability](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/maintainability.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
 [![Code Coverage](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/coverage.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
 
 <p>
 
-Our collection of open source, in-house development tools.
+The Cutout™ cross-platform development kernel.
 
 </p>
 
@@ -21,7 +21,6 @@ Our collection of open source, in-house development tools.
 | ---------------------------------------- | ------------------------------------- | -------------- | ----------------------------------------------------------------------- |
 | [`@cutout/jsx`](./jsx/)                  | Write JSX once, use it anywhere.      | Alpha          | [![JSR](https://jsr.io/badges/@cutout/jsx)](https://jsr.io/@cutout/jsx) |
 | [`@cutout/store`](./experimental/store/) | Store and load JSX documents as data. | _Experimental_ | n/a                                                                     |
-| [`@cutout/agent`](./experimental/agent/) | Local LLM agent.                      | _Experimental_ | n/a                                                                     |
 | [`@cutout/tauri`](./experimental/tauri/) | Embed Deno in a Tauri app?            | _Experimental_ | n/a                                                                     |
 
 ## Contributing
