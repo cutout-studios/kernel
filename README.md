@@ -7,13 +7,13 @@
 
 <p>
 
-The Cutout™ cross-platform development kernel.
+The Cutout™ cross-platform development kernel. \[IN DEVELOPMENT\]
 
 </p>
 
 </div>
 
---- |
+---
 
 ## Contributing
 
