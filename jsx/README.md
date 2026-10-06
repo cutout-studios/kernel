@@ -1,27 +1,27 @@
-# `@cutout/jsx`
+# `@cutout/kernel`
 
-[![JSR](https://jsr.io/badges/@cutout/jsx)]([https://jsr.io/@cutout/jsx](https://jsr.io/@cutout/jsx))
+[![JSR](https://jsr.io/badges/@cutout/kernel)]([https://jsr.io/@cutout/kernel](https://jsr.io/@cutout/kernel))
 
-`@cutout/jsx` is a tiny, generic, interpretable JSX runtime for the Deno
+`@cutout/kernel` is a tiny, generic, interpretable JSX runtime for the Deno
 ecosystem. It's inspired in part by the long-abandoned
 [OpenJSX](https://github.com/OpenJSX).
 
 _**Write JSX once, use it anywhere.**_
 
 > [!WARNING]
-> `@cutout/jsx` is pending in-production testing. Use at your own discretion.
+> `@cutout/kernel` is pending in-production testing. Use at your own discretion.
 
 ## How it works
 
 In a new TSX file, point your `@jsxImportSource` to _this_ runtime
-([`@cutout/jsx`](https://github.com/cutout-studios/toolbox/blob/main/jsx/module.ts))
+([`@cutout/kernel`](https://github.com/cutout-studios/toolbox/blob/main/jsx/module.ts))
 instead of the default one (React).
 
 ```tsx
-/** @jsxImportSource jsr:@cutout/jsx */
+/** @jsxImportSource jsr:@cutout/kernel */
 ```
 
-The `@cutout/jsx` runtime _progressively evaluates_ your JSX via a series of
+The `@cutout/kernel` runtime _progressively evaluates_ your JSX via a series of
 nested
 [`Generators`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator):
 returning a flat stream of tuples we call "tokens". This token stream can then
@@ -31,8 +31,8 @@ The simplest built-in projection is `rawText`, which serializes the JSX verbatim
 into a string:
 
 ```tsx
-/** @jsxImportSource jsr:@cutout/jsx */
-import { rawText } from "@cutout/jsx/projections";
+/** @jsxImportSource jsr:@cutout/kernel */
+import { rawText } from "@cutout/kernel/projections";
 
 console.log(
   rawText(<div></div>),

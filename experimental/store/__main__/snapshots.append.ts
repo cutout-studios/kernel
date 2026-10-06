@@ -11,7 +11,7 @@ import {
   type XOOutputToken,
   type XOPrimitiveToken,
   XOTokenType,
-} from "@cutout/jsx/tokens";
+} from "@cutout/kernel/tokens";
 import type { XOBackend } from "@cutout/store/backend";
 
 import {

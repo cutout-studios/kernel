@@ -1,4 +1,4 @@
-/** @jsxImportSource @cutout/jsx */
+/** @jsxImportSource @cutout/kernel */
 
 import { XOError, XOErrorCode } from "@cutout/internal";
 import {
@@ -11,7 +11,7 @@ import {
   type XOIdentifierToken,
   type XOJSXToken,
   XOTokenType,
-} from "@cutout/jsx/tokens";
+} from "@cutout/kernel/tokens";
 import type { XOBackend } from "@cutout/store/backend";
 import type { XOStoreSelector } from "@cutout/store/selector";
 

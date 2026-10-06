@@ -25,7 +25,7 @@ store.append(
 );
 
 // Later...
-import { rawText } from "@cutout/jsx/projections";
+import { rawText } from "@cutout/kernel/projections";
 import { parseSelector } from "@cutout/store/selector";
 
 const getUser = (userId) => parseSelector(`user#${userId}`);

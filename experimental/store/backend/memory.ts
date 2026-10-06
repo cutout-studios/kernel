@@ -1,4 +1,4 @@
-import { type XONullToken, XOTokenType } from "@cutout/jsx/tokens";
+import { type XONullToken, XOTokenType } from "@cutout/kernel/tokens";
 import type { Backend, TokenPath, TokenSegment } from "./types.ts";
 
 type SerializedPathTrie = Map<string, SerializedPathTrie>;

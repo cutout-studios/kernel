@@ -1,4 +1,4 @@
-import { tokenizeValue } from "@cutout/jsx/tokens";
+import { tokenizeValue } from "@cutout/kernel/tokens";
 import { assertArrayIncludes, assertEquals } from "@std/assert";
 import { MemoryBackend } from "./memory.ts";
 import type { TokenPath } from "./types.ts";

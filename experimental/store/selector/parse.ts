@@ -3,7 +3,7 @@ import {
   tokenizeValue,
   type XOStringToken,
   XOTokenType,
-} from "@cutout/jsx/tokens";
+} from "@cutout/kernel/tokens";
 
 import { AttributeOperator, Combinator } from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";

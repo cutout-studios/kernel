@@ -3,7 +3,7 @@ import {
   XO_CHILDREN_LABEL,
   type XOIdentifierToken,
   XOTokenType,
-} from "@cutout/jsx/tokens";
+} from "@cutout/kernel/tokens";
 
 export const DEFAULT_IDENTIFIER_BYTE_LENGTH = 16;
 export const DEFAULT_IDENTIFIER_ALPHABET =

@@ -1,5 +1,5 @@
 import type { AnyShape, EmptyShape } from "@cutout/internal";
-import type { XOJSXToken } from "@cutout/jsx/tokens";
+import type { XOJSXToken } from "@cutout/kernel/tokens";
 
 /**
  * A "projection" is a function used to cast JSX to a different format.

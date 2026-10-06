@@ -3,14 +3,14 @@ import type { TokenType } from "./constants.ts";
 
 /**
  * @packageDocumentation
- * Types for the @cutout/jsx runtime.
+ * Types for the @cutout/kernel runtime.
  * These define the intermediate representation (IR) stream our JSX returns.
  *
  * Basically, every piece of data in our JSX tree is a token tuple of `[type, value]`.
  */
 
 /**
- * The fundamental shape of a token in @cutout/jsx: a readonly tuple of `[type, value]`.
+ * The fundamental shape of a token in @cutout/kernel: a readonly tuple of `[type, value]`.
  *
  * @template A The token type (default: `XOTokenType.UNKNOWN`).
  * @template T The actual data payload (default: `unknown`).
@@ -231,7 +231,7 @@ export type OutputToken =
   | SyntaxToken;
 
 /**
- * This covers every valid token you might encounter when working with `@cutout/jsx`.
+ * This covers every valid token you might encounter when working with `@cutout/kernel`.
  *
  * It includes the output-safe tokens plus the Generator tokens used for
  * internal processing and streaming logic.

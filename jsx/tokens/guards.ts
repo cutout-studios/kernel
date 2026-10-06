@@ -1,7 +1,7 @@
 /**
  * @packageDocumentation
  *
- * These type guards allows `@cutout/jsx` to guarantee robust runtime data type consistency.
+ * These type guards allows `@cutout/kernel` to guarantee robust runtime data type consistency.
  */
 
 import {

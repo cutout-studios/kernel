@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * The runtime implementation for the `@cutout/jsx` pragma, which transforms standard JSX syntax (like
+ * The runtime implementation for the `@cutout/kernel` pragma, which transforms standard JSX syntax (like
  * `<div>Hello</div>`) into a custom token stream using generators.
  * Think of this as the bridge between TypeScript's JSX emission and XO's runtime-typed
  * intermediate representation (IR).
@@ -23,10 +23,10 @@ import {
   type XOJSXToken,
   type XOOutputToken,
   XOTokenType,
-} from "@cutout/jsx/tokens";
+} from "@cutout/kernel/tokens";
 
 /**
- * The default @cutout/jsx typings.
+ * The default @cutout/kernel typings.
  *
  * Without knowing how you want to format your JSX,
  * we must allow all elements and attributes:
@@ -61,7 +61,7 @@ export type XOElementFunction<A = Record<string, unknown>> = (
 ) => XOJSXToken;
 
 /**
- * The core transformation function for `@cutout/jsx`.
+ * The core transformation function for `@cutout/kernel`.
  *
  * This is what TypeScript calls when it sees `<MyComponent prop="value">child</MyComponent>`.
  * Instead of returning a node, we return a `XOGeneratorToken`.

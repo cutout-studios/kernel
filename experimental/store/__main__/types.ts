@@ -1,4 +1,4 @@
-import type { XOJSXToken } from "@cutout/jsx/tokens";
+import type { XOJSXToken } from "@cutout/kernel/tokens";
 import type { XOStoreSelector } from "@cutout/store/selector";
 
 export type Store = {

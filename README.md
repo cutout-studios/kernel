@@ -13,15 +13,7 @@ The Cutout™ cross-platform development kernel.
 
 </div>
 
----
-
-## Contents
-
-| Module Name                              | What is it?                           | Status         | Latest Release                                                          |
-| ---------------------------------------- | ------------------------------------- | -------------- | ----------------------------------------------------------------------- |
-| [`@cutout/jsx`](./jsx/)                  | Write JSX once, use it anywhere.      | Alpha          | [![JSR](https://jsr.io/badges/@cutout/jsx)](https://jsr.io/@cutout/jsx) |
-| [`@cutout/store`](./experimental/store/) | Store and load JSX documents as data. | _Experimental_ | n/a                                                                     |
-| [`@cutout/tauri`](./experimental/tauri/) | Embed Deno in a Tauri app?            | _Experimental_ | n/a                                                                     |
+--- |
 
 ## Contributing
 

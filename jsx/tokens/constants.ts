@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * Important constants in the @cutout/jsx runtime.
+ * Important constants in the @cutout/kernel runtime.
  *
  * These define the magic numbers and labels used to structure tokens and handle
  * special JSX cases.

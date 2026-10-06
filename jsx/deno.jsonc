@@ -3,7 +3,7 @@
     "@std/assert": "jsr:@std/assert",
     "@std/testing": "jsr:@std/testing",
 
-    "@cutout/jsx/tokens": "./tokens/module.ts",
+    "@cutout/kernel/tokens": "./tokens/module.ts",
     // To ensure "internal" stays so, we alias it here.
     "@cutout/internal": "../internal/module.ts"
   },
