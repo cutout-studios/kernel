@@ -10,8 +10,9 @@ import {
   TOKEN_VALUE_INDEX,
   TokenType,
 } from "./constants.ts";
+
 import type {
-  JSXGeneratorToken,
+  OutputGeneratorToken,
   OutputToken,
   PrimitiveToken,
   PromiseToken,
@@ -25,7 +26,7 @@ import type {
  */
 export const isValidToken = (
   value: unknown,
-): value is ValidToken => isOutputToken(value) || isGeneratorToken(value);
+): value is ValidToken => isOutputToken(value) || isOutputGeneratorToken(value);
 
 /**
  * A TypeScript guard for XO Tokens that can be returned
@@ -107,9 +108,9 @@ export const isPromiseToken = (
  *
  * @param {unknown} value
  */
-export const isGeneratorToken = (
+export const isOutputGeneratorToken = (
   value: unknown,
-): value is JSXGeneratorToken => {
+): value is OutputGeneratorToken => {
   if (!Array.isArray(value)) return false;
   if (value.length !== TOKEN_LENGTH) return false;
 

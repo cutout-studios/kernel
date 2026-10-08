@@ -1,4 +1,5 @@
-import type { AnyFunction } from "@cutout/internal";
+import type { AnyFunction } from "__internal__";
+
 import type { TokenType } from "./constants.ts";
 
 /**
@@ -36,8 +37,8 @@ export type AnyToken<
  */
 export type SystemToken =
   | UnknownToken
-  | JSXGeneratorToken
-  | IdentifierToken;
+  | IdentifierToken
+  | OutputGeneratorToken;
 
 /**
  * A token where we genuinely don't know the type or value yet.
@@ -55,7 +56,7 @@ export type UnknownToken = AnyToken<
  * dynamically, which is great for streaming SSR or lazy evaluation.
  * It yields OutputXOTokens on demand.
  */
-export type JSXGeneratorToken = AnyToken<
+export type OutputGeneratorToken = AnyToken<
   TokenType.GENERATOR,
   () => Generator<OutputToken>
 >;
@@ -237,6 +238,6 @@ export type OutputToken =
  * internal processing and streaming logic.
  */
 export type ValidToken =
-  | OutputToken
   | IdentifierToken
-  | JSXGeneratorToken;
+  | OutputToken
+  | OutputGeneratorToken;

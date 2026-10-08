@@ -7,23 +7,31 @@
  */
 
 import {
-  isJSXToken,
+  TokenType,
+  CHILDREN_LABEL,
+  FRAGMENT_LABEL,
+  TOKEN_TYPE_INDEX,
+  TOKEN_VALUE_INDEX,
+  UNSERIALIZABLE_LABEL
+} from "./tokens/constants.ts";
+
+import {
   isOutputToken,
-  isValidToken,
-  tokenizeValue,
-  type UnknownToken,
-  XO_CHILDREN_LABEL,
-  XO_FRAGMENT_LABEL,
-  XO_TOKEN_TYPE_INDEX,
-  XO_TOKEN_VALUE_INDEX,
-  XO_UNSERIALIZABLE_LABEL,
-  type XOAttributeToken,
-  type XOElementCloseToken,
-  type XOElementToken,
-  type XOJSXToken,
-  type XOOutputToken,
-  XOTokenType,
-} from "@cutout/kernel/tokens";
+  isOutputGeneratorToken,
+  isValidToken
+} from "./tokens/guards.ts";
+
+import { tokenize } from "./tokens/tokenize.ts";
+
+import type {
+  AttributeToken,
+  ElementCloseToken,
+  ElementToken,
+  OutputGeneratorToken,
+  OutputToken,
+  UnknownToken,
+} from "./tokens/types.ts";
+
 
 /**
  * The default @cutout/kernel typings.
@@ -56,9 +64,9 @@ export namespace JSX {
  * const incorrect = <MyElement hello={123} /> // Type Error.
  * ```
  */
-export type XOElementFunction<A = Record<string, unknown>> = (
+export type ElementFunction<A = Record<string, unknown>> = (
   attributes: A,
-) => XOJSXToken;
+) => OutputGeneratorToken;
 
 /**
  * The core transformation function for `@cutout/kernel`.
@@ -76,10 +84,10 @@ export type XOElementFunction<A = Record<string, unknown>> = (
  * @returns A generator token representing the element structure.
  */
 export const jsx = (
-  element: XOElementFunction | string,
+  element: ElementFunction | string,
   _elementAttributes: { [key: string]: unknown },
   ..._elementChildren: unknown[]
-): XOJSXToken => {
+): OutputGeneratorToken => {
   const _generator = function* () {
     // 1. Normalize children across "react" and "react-jsx" pragma types.
     //    We separate children from the rest of the attributes to handle them separately.
@@ -101,32 +109,32 @@ export const jsx = (
 
     // 3. Otherwise, we've hit an intrinsic element.
     // => 3.1. Yield the opening tag.
-    yield [XOTokenType.ELEMENT_OPEN, element] as XOElementToken;
+    yield [TokenType.ELEMENT_OPEN, element] as ElementToken;
 
     // => 3.2. Yield all non-child attributes.
     for (const key in attributes) {
-      yield [XOTokenType.ATTRIBUTE, key] as XOAttributeToken;
+      yield [TokenType.ATTRIBUTE, key] as AttributeToken;
       yield* _forwardTokens(attributes[key]);
     }
 
     // => 3.3. Yield children.
     if (Array.isArray(children) && children.length) {
       yield [
-        XOTokenType.ATTRIBUTE,
-        XO_CHILDREN_LABEL,
-      ] as XOAttributeToken;
+        TokenType.ATTRIBUTE,
+        CHILDREN_LABEL,
+      ] as AttributeToken;
 
       for (const child of children as unknown[]) yield* _forwardTokens(child);
     }
 
     // => 3.4. Yield the closing tag.
     yield [
-      XOTokenType.ELEMENT_CLOSE,
+      TokenType.ELEMENT_CLOSE,
       element,
-    ] as XOElementCloseToken;
+    ] as ElementCloseToken;
   };
 
-  return [XOTokenType.GENERATOR, _generator];
+  return [TokenType.GENERATOR, _generator];
 };
 
 /**
@@ -141,19 +149,19 @@ export const jsxs: typeof jsx = jsx;
  * In JSX, this lets you group elements without adding an extra wrapper to the
  * DOM. Here, it's just an alias for our fragment label.
  */
-export const Fragment: string = XO_FRAGMENT_LABEL;
+export const Fragment: string = FRAGMENT_LABEL;
 
 function* _forwardTokens(
   value: unknown,
   debug = false,
-): Generator<XOOutputToken> {
+): Generator<OutputToken> {
   if (Array.isArray(value) && !isValidToken(value)) {
     for (const item of value) yield* _forwardTokens(item);
     return;
   }
 
-  if (isJSXToken(value)) {
-    yield* value[XO_TOKEN_VALUE_INDEX]();
+  if (isOutputGeneratorToken(value)) {
+    yield* value[TOKEN_VALUE_INDEX]();
     return;
   }
 
@@ -162,20 +170,20 @@ function* _forwardTokens(
     return;
   }
 
-  const token = tokenizeValue(value) as XOOutputToken | UnknownToken;
+  const token = tokenize(value) as OutputToken | UnknownToken;
 
-  if (token[XO_TOKEN_TYPE_INDEX] !== XOTokenType.UNKNOWN) {
+  if (token[TOKEN_TYPE_INDEX] !== TokenType.UNKNOWN) {
     yield token;
   }
 
   // ISSUE(#47): implement jsxDEV to exercise the `debug` option.
-  if (token[XO_TOKEN_TYPE_INDEX] === XOTokenType.UNKNOWN && debug) {
+  if (token[TOKEN_TYPE_INDEX] === TokenType.UNKNOWN && debug) {
     let unknownValue;
 
     try {
       unknownValue = JSON.stringify(value);
     } catch {
-      unknownValue = XO_UNSERIALIZABLE_LABEL;
+      unknownValue = UNSERIALIZABLE_LABEL;
     }
 
     console.warn(`Encountered unknown value "${unknownValue}". Skipping.`);
