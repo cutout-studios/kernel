@@ -15,11 +15,11 @@ import {
 import type { XOBackend } from "@cutout/store/backend";
 import type { XOStoreSelector } from "@cutout/store/selector";
 
-import { ROOT_SNAPSHOT_TOKEN } from "./constants.ts";
-import { appendAttribute, appendChild, appendTag } from "./snapshots.append.ts";
-import { getIdentifierTokenFactory } from "./snapshots.identifier.ts";
-import { selectJSX, selectTokens } from "./snapshots.select.ts";
-import type { Store } from "./types.ts";
+import { ROOT_SNAPSHOT_TOKEN } from "../__main__/constants.ts";
+import { appendAttribute, appendChild, appendTag } from "../__main__/snapshots.append.ts";
+import { getIdentifierTokenFactory } from "../__main__/snapshots.identifier.ts";
+import { selectJSX, selectTokens } from "../__main__/snapshots.select.ts";
+import type { Store } from "../__main__/types.ts";
 
 type Options = {
   backend: XOBackend;

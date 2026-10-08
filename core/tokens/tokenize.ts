@@ -1,10 +1,10 @@
 /**
  * @packageDocumentation
  *
- * "tokenizeValue" is an important utilty: it transforms arbitrary JavaScript data into tokens.
+ * "tokenizeValue" is an important utility: it transforms arbitrary JavaScript data into tokens.
  */
 
-import type { AnyFunction } from "@cutout/internal";
+import type { AnyFunction } from "__internal__";
 import { TokenType } from "./constants.ts";
 import type { OutputToken, UnknownToken } from "./types.ts";
 
@@ -29,11 +29,11 @@ type TokenForValue<T> = T extends number | bigint ? [TokenType.NUMBER, T]
  * @example
  * ```ts
  * const [type, value] = tokenizeValue("hello");
- *   // type -> XOTokenType.String
+ *   // type -> TokenType.String
  *   // value -> "hello"
  * ```
  */
-export const tokenizeValue = <T>(value: T): TokenForValue<T> =>
+export const tokenize = <T>(value: T): TokenForValue<T> =>
   _tokenizeValue(value) as TokenForValue<T>;
 
 function _tokenizeValue(value: unknown): OutputToken | UnknownToken {

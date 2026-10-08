@@ -1,9 +1,0 @@
-{
-  "name": "@cutout/internal",
-  "exports": {
-    ".": "./module.ts"
-  },
-  "imports": {
-    "@std/assert": "jsr:@std/assert"
-  }
-}

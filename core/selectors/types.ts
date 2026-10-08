@@ -1,20 +1,20 @@
 import type {
-  XOAttributeToken,
-  XOElementToken,
-  XOStringToken,
-} from "@cutout/kernel/tokens";
+  AttributeToken,
+  ElementToken,
+  StringToken,
+} from "../tokens/types.ts";
 import type { AttributeOperator, Combinator } from "./constants.ts";
 
 export type Selector = {
-  tag?: XOElementToken;
+  tag?: ElementToken;
   attributes: AttributeSelector[];
   combinator?: Combinator;
   child?: Selector;
 };
 
 export type AttributeSelector = {
-  key: XOAttributeToken;
-  value?: XOStringToken;
+  key: AttributeToken;
+  value?: StringToken;
   operator?: AttributeOperator;
   caseSensitive?: boolean;
 };

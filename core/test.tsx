@@ -1,7 +1,7 @@
 /** @jsxImportSource @cutout/kernel */
 
 import { assertSnapshot } from "@std/testing/snapshot";
-import type { JSXGeneratorToken } from "./tokens/types.ts";
+import type { OutputGeneratorToken } from "./tokens/types.ts";
 
 const TEST_GROUP = "jsx";
 
@@ -102,7 +102,7 @@ Deno.test(
   },
 );
 
-function assertXOJsxSnapshot([, render]: JSXGeneratorToken) {
+function assertXOJsxSnapshot([, render]: OutputGeneratorToken) {
   return async (test: Deno.TestContext) =>
     await assertSnapshot(test, [...render()]);
 }

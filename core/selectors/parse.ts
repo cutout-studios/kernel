@@ -1,9 +1,8 @@
-import { enumGuardFactory, XOError, XOErrorCode } from "@cutout/internal";
-import {
-  tokenizeValue,
-  type XOStringToken,
-  XOTokenType,
-} from "@cutout/kernel/tokens";
+import { enumGuardFactory, XOError, XOErrorCode } from "__internal__";
+
+import { TokenType } from "../tokens/constants.ts";
+import { tokenize } from "../tokens/tokenize.ts";
+import type { StringToken } from "../tokens/types.ts";
 
 import { AttributeOperator, Combinator } from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";
@@ -54,16 +53,16 @@ function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
 
   while ((piece = subqueryRegex.exec(subquery)) !== null) {
     const { t: tag, i: id, c: className, a: attribute } = piece.groups!;
-    if (tag) result.tag = [XOTokenType.ELEMENT_OPEN, tag];
+    if (tag) result.tag = [TokenType.ELEMENT_OPEN, tag];
     else if (id) {
       result.attributes.push({
-        key: [XOTokenType.ATTRIBUTE, "id"],
-        value: [XOTokenType.STRING, id],
+        key: [TokenType.ATTRIBUTE, "id"],
+        value: [TokenType.STRING, id],
       });
     } else if (className) {
       result.attributes.push({
-        key: [XOTokenType.ATTRIBUTE, "class"],
-        value: [XOTokenType.STRING, className],
+        key: [TokenType.ATTRIBUTE, "class"],
+        value: [TokenType.STRING, className],
       });
     } else if (attribute) {
       const parsed = _parseAttribute(attribute);
@@ -87,11 +86,11 @@ function _parseAttribute(
   if (!attributeMatch?.groups) return;
   const { k: key, v: value, o: operator, c: casing } = attributeMatch.groups;
   if (!key) return;
-  const result: AttributeSelector = { key: [XOTokenType.ATTRIBUTE, key] };
+  const result: AttributeSelector = { key: [TokenType.ATTRIBUTE, key] };
   if (value) {
-    result.value = tokenizeValue(
+    result.value = tokenize(
       value.replace(/^["']|["']$/g, ""),
-    ) as XOStringToken;
+    ) as StringToken;
   }
   if (casing) result.caseSensitive = casing === "s";
   if (_isAttributeOperator(operator)) result.operator = operator;

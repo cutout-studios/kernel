@@ -2,75 +2,20 @@
   "version": "5",
   "specifiers": {
     "jsr:@ayk/lint-import-order@*": "0.1.0",
-    "jsr:@std/assert@*": "1.0.19",
-    "jsr:@std/assert@^1.0.19": "1.0.19",
-    "jsr:@std/dotenv@~0.225.7": "0.225.7",
-    "jsr:@std/fs@^1.0.24": "1.0.24",
-    "jsr:@std/internal@^1.0.12": "1.0.14",
-    "jsr:@std/internal@^1.0.14": "1.0.14",
-    "jsr:@std/path@*": "1.1.5",
-    "jsr:@std/path@^1.1.5": "1.1.5",
-    "jsr:@std/testing@*": "1.0.19"
+    "jsr:@std/dotenv@~0.225.7": "0.225.7"
   },
   "jsr": {
     "@ayk/lint-import-order@0.1.0": {
       "integrity": "be312f8269525055394118ac89d5a12dbb0bdc4a94d0ced4994b1823cc41c393"
     },
-    "@std/assert@1.0.19": {
-      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
-      "dependencies": [
-        "jsr:@std/internal@^1.0.12"
-      ]
-    },
     "@std/dotenv@0.225.7": {
       "integrity": "11d8db03ca4ad5aba9eba809f2e8058b2a4f320b7b09fea4b360e162928329e3"
-    },
-    "@std/fs@1.0.24": {
-      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
-      "dependencies": [
-        "jsr:@std/path@^1.1.5"
-      ]
-    },
-    "@std/internal@1.0.14": {
-      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
-    },
-    "@std/path@1.1.5": {
-      "integrity": "ccea00982ea28c36becaf6e62f855406c76a8c32d462f66f415bbb7d83a271bc",
-      "dependencies": [
-        "jsr:@std/internal@^1.0.14"
-      ]
-    },
-    "@std/testing@1.0.19": {
-      "integrity": "f4236172365b216728dc3cc8b5e80a9f4c33083d1e4ede7613d5b25b4014898e",
-      "dependencies": [
-        "jsr:@std/assert@^1.0.19",
-        "jsr:@std/fs",
-        "jsr:@std/internal@^1.0.14",
-        "jsr:@std/path@^1.1.5"
-      ]
     }
   },
   "workspace": {
-    "members": {
-      "experimental/store": {
-        "dependencies": [
-          "jsr:@std/assert@*",
-          "jsr:@std/testing@*"
-        ]
-      },
-      "jsx": {
-        "dependencies": [
-          "jsr:@std/assert@*",
-          "jsr:@std/testing@*"
-        ]
-      }
-    },
-    "links": {
-      "jsr:@cutout/internal": {
-        "dependencies": [
-          "jsr:@std/assert@*"
-        ]
-      }
-    }
+    "dependencies": [
+      "jsr:@std/assert@*",
+      "jsr:@std/testing@*"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { TokenType } from "./constants.ts";
 import { isValidToken } from "./guards.ts";
-import { tokenizeValue } from "./tokenizeValue.ts";
+import { tokenize } from "./tokenize.ts";
 
 const TEST_GROUP = "jsx/tokens";
 
@@ -38,20 +38,20 @@ Deno.test(`${TEST_GROUP} - isValidToken`, () => {
 });
 
 Deno.test(`${TEST_GROUP} - tokenizeValue`, () => {
-  assertEquals(tokenizeValue(0), [TokenType.NUMBER, 0]);
-  assertEquals(tokenizeValue("value"), [TokenType.STRING, "value"]);
-  assertEquals(tokenizeValue(null), [TokenType.NULL, null]);
-  assertEquals(tokenizeValue(undefined), [
+  assertEquals(tokenize(0), [TokenType.NUMBER, 0]);
+  assertEquals(tokenize("value"), [TokenType.STRING, "value"]);
+  assertEquals(tokenize(null), [TokenType.NULL, null]);
+  assertEquals(tokenize(undefined), [
     TokenType.UNDEFINED,
     undefined,
   ]);
 
   const array: unknown[] = [];
-  assertEquals(tokenizeValue(array), [TokenType.ARRAY, array]);
+  assertEquals(tokenize(array), [TokenType.ARRAY, array]);
 
   const object = {};
-  assertEquals(tokenizeValue(object), [TokenType.OBJECT, object]);
+  assertEquals(tokenize(object), [TokenType.OBJECT, object]);
 
   const func = () => {};
-  assertEquals(tokenizeValue(func), [TokenType.FUNCTION, func]);
+  assertEquals(tokenize(func), [TokenType.FUNCTION, func]);
 });

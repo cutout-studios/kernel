@@ -1,10 +1,13 @@
 {
-  "name": "@cutout/kernel",
-  "version": "0.0.5",
   "exports": {
-    "./jsx-runtime": "./jsx/module.ts",
-    "./tokens": "./jsx/tokens/module.ts",
-    "./projections": "./jsx/projections/module.ts"
+    ".": "./core/module.ts",
+    "./experimental": "./experimental/module.ts",
+    "./jsx-runtime": "./core/jsx.ts"
+  },
+  "imports": {
+    "__internal__": "./core/__internal__/module.ts",
+    "@std/testing": "jsr:@std/testing",
+    "@std/assert": "jsr:@std/assert"
   },
   "fmt": {
     "indentWidth": 2,
@@ -18,9 +21,7 @@
       "jsr:@ayk/lint-import-order"
     ]
   },
-  "workspace": [
-    "jsx",
-    "experimental/store",
-    "experimental/tauri"
-  ]
+  "name": "@cutout/kernel",
+  "version": "0.0.6"
+  // TODO: add tauri test script
 }
