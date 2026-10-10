@@ -1,3 +1,6 @@
+> [!WARNING]
+> [Shockingly, Deno is suddenly being shut down.](https://deno.com/blog/cloudflare) This effort is **paused** while we figure out what to do next.
+
 <div align="center">
 
 <h1>✂️ The Cutout Kernel 🌱</h1>
