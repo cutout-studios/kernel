@@ -1,8 +1,8 @@
-# `@cutout/kernel`
+# `@cutout/kernel` pragma
 
 [![JSR](https://jsr.io/badges/@cutout/kernel)]([https://jsr.io/@cutout/kernel](https://jsr.io/@cutout/kernel))
 
-`@cutout/kernel` is a tiny, generic, interpretable JSX runtime for the Deno
+The `@cutout/kernel` pragma is a tiny, generic, interpretable JSX runtime for the Deno
 ecosystem. It's inspired in part by the long-abandoned
 [OpenJSX](https://github.com/OpenJSX).
 
