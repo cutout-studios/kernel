@@ -1,6 +1,6 @@
 > [!WARNING]
-> [Shockingly, Deno is suddenly being shut down.](https://deno.com/blog/cloudflare)
-> This effort is **paused** while we figure out what to do next.
+> [Shockingly, the runtime our kernel depends on is suddenly being shut down.](https://deno.com/blog/cloudflare)
+> Progress is **paused** while we figure out what to do next.
 
 <div align="center">
 
@@ -10,16 +10,14 @@
 [![Maintainability](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/maintainability.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
 [![Code Coverage](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/coverage.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
 
+**Interested in contributing?** See our
+[Contribution Guide](https://github.com/cutout-studios/.github/blob/main/CONTRIBUTING.md).
+
 </div>
 
 ---
 
-## Contributing
-
-**Interested in contributing?** See our
-[Contribution Guide](https://github.com/cutout-studios/.github/blob/main/CONTRIBUTING.md).
-
-## License
+### License
 
 MIT — see [LICENSE](./LICENSE).
 
