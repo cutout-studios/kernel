@@ -1,7 +1,7 @@
 /** @jsxImportSource @cutout/kernel */
 
+import { rawText } from "@cutout/kernel/jsx/projection";
 import { parseSelector } from "@cutout/kernel/jsx/selector";
-import { rawText } from "@cutout/kernel/projections";
 import { XOMemoryBackend } from "@cutout/kernel/store/backend";
 import { assertSnapshot } from "@std/testing/snapshot";
 

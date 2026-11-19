@@ -11,8 +11,8 @@ entrypoints=(
   store/backend/module.ts
   store/selector/module.ts
   store/module.ts
-  jsx/tokens/module.ts
-  jsx/projections/module.ts
+  jsx/token/module.ts
+  jsx/projection/module.ts
   jsx/module.ts
 )
 

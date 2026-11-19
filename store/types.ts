@@ -1,7 +1,7 @@
-import type { XOStoreSelector } from "@cutout/kernel/jsx/selector";
+import type { XOSelector } from "@cutout/kernel/jsx/selector";
 import type { XOJSXToken } from "@cutout/kernel/jsx/token";
 
 export type Store = {
   append(jsx: XOJSXToken): void;
-  select(selectors: XOStoreSelector[]): XOJSXToken[];
+  select(selectors: XOSelector[]): XOJSXToken[];
 };
