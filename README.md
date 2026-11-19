@@ -1,6 +1,6 @@
 > [!WARNING]
 > [Shockingly, the runtime our kernel depends on is suddenly being shut down.](https://deno.com/blog/cloudflare)
-> Progress is **paused** while we figure out how to proceed.
+> Progress is **paused** while we determine how to proceed.
 
 <div align="center">
 
