@@ -8,12 +8,12 @@ core=$(size internal/module.ts)
 printf '%8s B  %s\n' "$core" "internal/module.ts"
 
 entrypoints=(
-  store/backend/module.ts
-  store/selector/module.ts
-  store/module.ts
-  jsx/token/module.ts
   jsx/projection/module.ts
+  jsx/selector/module.ts
+  jsx/token/module.ts
   jsx/module.ts
+  store/backend/module.ts
+  store/module.ts
 )
 
 for m in "${entrypoints[@]}"; do
