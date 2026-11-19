@@ -27,7 +27,7 @@ type Options = {
 
 /**
  * Creates a new XOStore for saving and manipulating JSX data documents.
- * 
+ *
  * @param options Configuration options - currently just the backend used.
  * @returns The created XOStore.
  */

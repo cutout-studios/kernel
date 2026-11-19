@@ -21,7 +21,7 @@ export type TokenSegment =
   | XOIdentifierToken;
 
 /**
- * A universal key-value token data interface, 
+ * A universal key-value token data interface,
  * to provide persistence to an XOStore.
  */
 export interface Backend {
