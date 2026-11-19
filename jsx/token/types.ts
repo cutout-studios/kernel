@@ -1,4 +1,4 @@
-import type { AnyFunction } from "@cutout/internal";
+import type { AnyFunction } from "@internal";
 import type { TokenType } from "./constants.ts";
 
 /**

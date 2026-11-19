@@ -1,4 +1,7 @@
-import { XOError, XOErrorCode } from "@cutout/internal";
+import type {
+  XOAttributeSelector,
+  XOSelector,
+} from "@cutout/kernel/jsx/selector";
 import {
   isPromiseToken,
   tokenizeValue,
@@ -12,12 +15,9 @@ import {
   type XOOutputToken,
   type XOPrimitiveToken,
   XOTokenType,
-} from "@cutout/kernel/tokens";
-import type { XOBackend, XOBackendPath } from "@cutout/store/backend";
-import type {
-  XOAttributeSelector,
-  XOStoreSelector,
-} from "@cutout/store/selector";
+} from "@cutout/kernel/jsx/token";
+import type { XOBackend, XOBackendPath } from "@cutout/kernel/store/backend";
+import { XOError, XOErrorCode } from "@internal";
 
 import {
   INDEX_ATTRIBUTES_LABEL,
@@ -117,7 +117,7 @@ export function selectJSX(
 
 export function selectTokens(
   backend: XOBackend,
-  { attributes, tag }: XOStoreSelector,
+  { attributes, tag }: XOSelector,
 ): XOIdentifierToken[] {
   let result;
 

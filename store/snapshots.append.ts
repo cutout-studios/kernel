@@ -1,4 +1,3 @@
-import { XOError, XOErrorCode } from "@cutout/internal";
 import {
   isPrimitiveToken,
   tokenizeValue,
@@ -11,8 +10,9 @@ import {
   type XOOutputToken,
   type XOPrimitiveToken,
   XOTokenType,
-} from "@cutout/kernel/tokens";
-import type { XOBackend } from "@cutout/store/backend";
+} from "@cutout/kernel/jsx/token";
+import type { XOBackend } from "@cutout/kernel/store/backend";
+import { XOError, XOErrorCode } from "@internal";
 
 import {
   INDEX_ATTRIBUTES_TOKEN,

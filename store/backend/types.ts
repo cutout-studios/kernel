@@ -4,7 +4,7 @@ import type {
   XOPrimitiveToken,
   XOPromiseToken,
   XOSyntaxToken,
-} from "@cutout/kernel/tokens";
+} from "@cutout/kernel/jsx/token";
 
 export type TokenSegment =
   | XOPrimitiveToken

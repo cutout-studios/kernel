@@ -1,9 +1,9 @@
-import { enumGuardFactory, XOError, XOErrorCode } from "@cutout/internal";
 import {
   tokenizeValue,
   type XOStringToken,
   XOTokenType,
-} from "@cutout/kernel/tokens";
+} from "@cutout/kernel/jsx/token";
+import { enumGuardFactory, XOError, XOErrorCode } from "@internal";
 
 import { AttributeOperator, Combinator } from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";

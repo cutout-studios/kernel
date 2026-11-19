@@ -26,6 +26,8 @@
     ]
   },
   "imports": {
+    "@internal": "./internal/module.ts",
+
     "@std/assert": "jsr:@std/assert",
     "@std/testing": "jsr:@std/testing"
   },

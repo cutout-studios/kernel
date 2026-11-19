@@ -1,6 +1,6 @@
 /** @jsxImportSource @cutout/kernel */
 
-import { XOError, XOErrorCode } from "@cutout/internal";
+import type { XOSelector } from "@cutout/kernel/jsx/selector";
 import {
   isPrimitiveToken,
   tokenizeValue,
@@ -11,9 +11,9 @@ import {
   type XOIdentifierToken,
   type XOJSXToken,
   XOTokenType,
-} from "@cutout/kernel/tokens";
-import type { XOBackend } from "@cutout/store/backend";
-import type { XOStoreSelector } from "@cutout/store/selector";
+} from "@cutout/kernel/jsx/token";
+import type { XOBackend } from "@cutout/kernel/store/backend";
+import { XOError, XOErrorCode } from "@internal";
 
 import { ROOT_SNAPSHOT_TOKEN } from "./constants.ts";
 import { appendAttribute, appendChild, appendTag } from "./snapshots.append.ts";
@@ -105,7 +105,7 @@ export const create = ({ backend }: Options): Store => {
         }
       }
     },
-    select(selectors: XOStoreSelector[]): XOJSXToken[] {
+    select(selectors: XOSelector[]): XOJSXToken[] {
       _checkSelectorSupport(selectors);
 
       const snapshotIds = new Set<string>();
@@ -143,7 +143,7 @@ function _createChildIndexCounter() {
 }
 
 // ISSUE(#100): properly resolve CSS combinators and attribute comparators
-function _checkSelectorSupport(selectors: XOStoreSelector[]) {
+function _checkSelectorSupport(selectors: XOSelector[]) {
   for (const { attributes, combinator, child } of selectors) {
     if (combinator || child) {
       throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);

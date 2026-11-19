@@ -23,7 +23,7 @@ import {
   type XOJSXToken,
   type XOOutputToken,
   XOTokenType,
-} from "@cutout/kernel/tokens";
+} from "@cutout/kernel/jsx/token";
 
 /**
  * The default @cutout/kernel typings.

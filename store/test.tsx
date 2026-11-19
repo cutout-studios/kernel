@@ -1,8 +1,8 @@
 /** @jsxImportSource @cutout/kernel */
 
+import { parseSelector } from "@cutout/kernel/jsx/selector";
 import { rawText } from "@cutout/kernel/projections";
-import { XOMemoryBackend } from "@cutout/store/backend";
-import { parseSelector } from "@cutout/store/selector";
+import { XOMemoryBackend } from "@cutout/kernel/store/backend";
 import { assertSnapshot } from "@std/testing/snapshot";
 
 import { create } from "./create.ts";

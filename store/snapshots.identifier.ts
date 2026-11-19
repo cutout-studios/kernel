@@ -1,5 +1,5 @@
-import { XOError } from "@cutout/internal";
-import { type XOIdentifierToken, XOTokenType } from "@cutout/kernel/tokens";
+import { type XOIdentifierToken, XOTokenType } from "@cutout/kernel/jsx/token";
+import { XOError } from "@internal";
 
 import {
   BIN_TO_BYTES,

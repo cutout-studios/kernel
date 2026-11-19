@@ -2,7 +2,7 @@ import {
   XO_CHILDREN_LABEL,
   XO_FRAGMENT_LABEL,
   XOTokenType,
-} from "@cutout/kernel/tokens";
+} from "@cutout/kernel/jsx/token";
 
 import type { Projection } from "./types.ts";
 

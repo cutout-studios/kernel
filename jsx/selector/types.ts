@@ -2,7 +2,7 @@ import type {
   XOAttributeToken,
   XOElementToken,
   XOStringToken,
-} from "@cutout/kernel/tokens";
+} from "@cutout/kernel/jsx/token";
 import type { AttributeOperator, Combinator } from "./constants.ts";
 
 export type Selector = {

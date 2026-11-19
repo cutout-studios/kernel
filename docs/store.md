@@ -5,7 +5,7 @@ this:
 
 ```tsx
 import { createStore } from "@cutout/store";
-import { XOMemoryBackend } from "@cutout/store/backends";
+import { XOMemoryBackend } from "@cutout/kernel/store/backends";
 
 const store = createStore({ backend: new XOMemoryBackend() });
 
@@ -26,7 +26,7 @@ store.append(
 
 // Later...
 import { rawText } from "@cutout/kernel/projections";
-import { parseSelector } from "@cutout/store/selector";
+import { parseSelector } from "@cutout/kernel/jsx/selector";
 
 const getUser = (userId) => parseSelector(`user#${userId}`);
 

@@ -4,7 +4,7 @@
  * "tokenizeValue" is an important utilty: it transforms arbitrary JavaScript data into tokens.
  */
 
-import type { AnyFunction } from "@cutout/internal";
+import type { AnyFunction } from "@internal";
 import { TokenType } from "./constants.ts";
 import type { OutputToken, UnknownToken } from "./types.ts";
 
