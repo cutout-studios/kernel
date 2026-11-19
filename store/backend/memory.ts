@@ -3,7 +3,15 @@ import type { Backend, TokenPath, TokenSegment } from "./types.ts";
 
 type SerializedPathTrie = Map<string, SerializedPathTrie>;
 
+/**
+ * A rudimentary memory-only implementation of the XOBackend.
+ * It does not persist the data to any disk.
+ */
 export class MemoryBackend implements Backend {
+  /**
+   * Initialize the XOMemoryBackend with a collection of paths.
+   * @param paths The paths to add to the XOMemoryBackend.
+   */
   constructor(paths?: TokenPath[]) {
     for (const path of paths ?? []) {
       this.add(path);

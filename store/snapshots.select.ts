@@ -127,7 +127,7 @@ export function selectTokens(
         _attributeSpecificityHeuristic,
       )
     ) {
-      const attibuteSet = new Set<string>();
+      const attributeSet = new Set<string>();
       const prefix = value ? [key, value] : [key];
       for (
         const path of backend.list([INDEX_ATTRIBUTES_TOKEN, ...prefix]) ??
@@ -139,10 +139,10 @@ export function selectTokens(
 
         const [, snapshotId] = path.at(-1) as XOIdentifierToken;
 
-        attibuteSet.add(snapshotId);
+        attributeSet.add(snapshotId);
       }
 
-      result = result ? _intersect(result, attibuteSet) : attibuteSet;
+      result = result ? _intersect(result, attributeSet) : attributeSet;
     }
   }
 

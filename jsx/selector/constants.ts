@@ -1,3 +1,6 @@
+/**
+ * The means by which selector grammar is combined.
+ */
 export enum Combinator {
   LIST = ",",
   CHILD = ">",
@@ -7,6 +10,9 @@ export enum Combinator {
   DESCENDANT = " ",
 }
 
+/**
+ * The method by which a given attribute is matched.
+ */
 export enum AttributeOperator {
   EQUALS = "=",
   IN_LIST = "~=",

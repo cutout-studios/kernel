@@ -1,3 +1,4 @@
+/** @internal */
 export function readEnv<T>(key: string, defaultValue: T): T {
   const value = Deno.env.get(key);
 

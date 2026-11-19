@@ -8,6 +8,11 @@ import { enumGuardFactory, XOError, XOErrorCode } from "@internal";
 import { AttributeOperator, Combinator } from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";
 
+/**
+ * Converts a JSX document selector string into a usable object.
+ * @param query The selector string to parse.
+ * @returns The list of unserialized selector objects.
+ */
 export const parse = (query: string): Selector[] => {
   if (/[:@]/.test(query)) {
     throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
