@@ -26,7 +26,7 @@ jobs:
         run: deno lint
 
       - name: Lint Docs
-        run: deno task --cwd=jsx docs:lint
+        run: deno task docs:lint
 
   unitTests:
     name: Unit Tests
