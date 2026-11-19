@@ -1,16 +1,17 @@
 {
   "name": "@cutout/kernel",
-  "version": "0.0.5",
+  "version": "0.0.1",
   "exports": {
-    "./element": "./element/module.ts",
+    // "./element": "./element/module.ts",
+    // "./element/style": "./element/style/module.ts",
     "./jsx-runtime": "./jsx/module.ts",
     "./jsx/jsx-runtime": "./jsx/module.ts",
-    "./jsx/projections": "./jsx/projections/module.ts",
-    "./jsx/tokens": "./jsx/tokens/module.ts",
-    "./server": "./server/module.ts",
+    "./jsx/projection": "./jsx/projection/module.ts",
+    "./jsx/selector": "./jsx/selector/module.ts",
+    "./jsx/token": "./jsx/token/module.ts",
+    // "./server": "./server/module.ts",
     "./store": "./store/module.ts",
-    "./store/backend": "./store/backend/module.ts",
-    "./store/selector": "./store/selector/module.ts"
+    "./store/backend": "./store/backend/module.ts"
   },
   "fmt": {
     "indentWidth": 2,
@@ -26,7 +27,7 @@
   },
   "imports": {
     "@std/assert": "jsr:@std/assert",
-    "@std/testing": "jsr:@std/testing",
+    "@std/testing": "jsr:@std/testing"
   },
   "tasks": {
     "docs:lint": "deno doc --lint ./**/module.ts"

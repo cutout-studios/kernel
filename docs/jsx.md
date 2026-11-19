@@ -1,7 +1,7 @@
 # `@cutout/kernel`
 
-The `@cutout/kernel` JSX pragma is a tiny, generic, interpretable JSX runtime for the Deno
-ecosystem. It's inspired in part by the long-abandoned
+The `@cutout/kernel` JSX pragma is a tiny, generic, interpretable JSX runtime
+for the Deno ecosystem. It's inspired in part by the long-abandoned
 [OpenJSX](https://github.com/OpenJSX).
 
 _**Write JSX once, use it anywhere.**_
@@ -23,7 +23,9 @@ The `@cutout/kernel` runtime _progressively evaluates_ your JSX via a series of
 nested
 [`Generators`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator):
 returning a flat stream of tuples we call "tokens". This token stream can then
-be _projected_ into whatever shape you need. This approach has been shown to [outperform React](https://github.com/cutout-studios/kernel/blob/checkpoint/1/experimental/web/BENCHMARKS.md) during rendering.
+be _projected_ into whatever shape you need. This approach has been shown to
+[outperform React](https://github.com/cutout-studios/kernel/blob/checkpoint/1/experimental/web/BENCHMARKS.md)
+during rendering.
 
 The simplest built-in projection is `rawText`, which serializes the JSX verbatim
 into a string:
