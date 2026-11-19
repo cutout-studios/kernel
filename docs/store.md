@@ -1,4 +1,4 @@
-# `@cutout/store`
+# `@cutout/kernel/store`
 
 **The Idea**: Store and retrieve JSX across various backends. Something like
 this:

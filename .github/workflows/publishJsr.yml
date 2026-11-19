@@ -24,10 +24,5 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Get Package Directory
-        id: package
-        run: echo "directory=${TAG_NAME%/*}" >> $GITHUB_OUTPUT
-
       - name: Publish JSR
-        working-directory: ${{ steps.package.outputs.directory }}
         run: deno publish

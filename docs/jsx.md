@@ -1,4 +1,4 @@
-# `@cutout/kernel` JSX pragma
+# `@cutout/kernel`
 
 The `@cutout/kernel` JSX pragma is a tiny, generic, interpretable JSX runtime for the Deno
 ecosystem. It's inspired in part by the long-abandoned
