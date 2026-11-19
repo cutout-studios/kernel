@@ -2,12 +2,6 @@ name: Create Draft Release
 on:
   workflow_dispatch:
     inputs:
-      directory:
-        type: choice
-        required: true
-        description: The workspace directory to publish.
-        default: jsx
-        options: [jsx]
       increment:
         type: choice
         required: true
@@ -34,17 +28,14 @@ jobs:
 
       - name: Bump Version
         id: version
-        working-directory: ${{ inputs.directory }}
         env:
           INCREMENT: ${{ inputs.increment }}
-          DIRECTORY: ${{ inputs.directory }}
         run: |
           deno bump-version "${INCREMENT}" >/dev/null 2>&1
           NEW_VERSION="$(deno bump-version 2>/dev/null | tail -n1)"
-          echo "tag_name=${DIRECTORY}/${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag_name=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Test Publish
-        working-directory: ${{ inputs.directory }}
         run: deno publish --dry-run --allow-dirty
 
       - name: Commit Version

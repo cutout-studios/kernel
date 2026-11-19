@@ -1,18 +1,14 @@
 > [!WARNING]
-> [Shockingly, Deno is suddenly being shut down.](https://deno.com/blog/cloudflare) This effort is **paused** while we figure out what to do next.
+> [Shockingly, Deno is suddenly being shut down.](https://deno.com/blog/cloudflare)
+> This effort is **paused** while we figure out what to do next.
 
 <div align="center">
 
 <h1>✂️ The Cutout Kernel 🌱</h1>
 
+![Status](https://img.shields.io/badge/status-in_development-red)
 [![Maintainability](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/maintainability.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
 [![Code Coverage](https://qlty.sh/badges/63ab5737-a9d3-4598-855e-83c7fe779ec6/coverage.svg)](https://qlty.sh/gh/cutout-studios/projects/jsx)
-
-<p>
-
-The Cutout™ cross-platform development kernel. \[IN DEVELOPMENT\]
-
-</p>
 
 </div>
 

@@ -1,10 +1,17 @@
 {
   "name": "@cutout/kernel",
-  "version": "0.0.5",
+  "version": "0.0.1",
   "exports": {
+    // "./element": "./element/module.ts",
+    // "./element/style": "./element/style/module.ts",
     "./jsx-runtime": "./jsx/module.ts",
-    "./tokens": "./jsx/tokens/module.ts",
-    "./projections": "./jsx/projections/module.ts"
+    "./jsx/jsx-runtime": "./jsx/module.ts",
+    "./jsx/projection": "./jsx/projection/module.ts",
+    "./jsx/selector": "./jsx/selector/module.ts",
+    "./jsx/token": "./jsx/token/module.ts",
+    // "./server": "./server/module.ts",
+    "./store": "./store/module.ts",
+    "./store/backend": "./store/backend/module.ts"
   },
   "fmt": {
     "indentWidth": 2,
@@ -18,9 +25,13 @@
       "jsr:@ayk/lint-import-order"
     ]
   },
-  "workspace": [
-    "jsx",
-    "experimental/store",
-    "experimental/tauri"
-  ]
+  "imports": {
+    "@internal": "./internal/module.ts",
+
+    "@std/assert": "jsr:@std/assert",
+    "@std/testing": "jsr:@std/testing"
+  },
+  "tasks": {
+    "docs:lint": "deno doc --lint ./**/module.ts"
+  }
 }
