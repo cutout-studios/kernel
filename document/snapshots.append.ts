@@ -1,3 +1,4 @@
+import type { XOStore } from "@cutout/kernel/document/store";
 import {
   isPrimitiveToken,
   tokenizeValue,
@@ -11,7 +12,6 @@ import {
   type XOPrimitiveToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import type { XOBackend } from "@cutout/kernel/store/backend";
 import { XOError, XOErrorCode } from "@internal";
 
 import {
@@ -24,23 +24,23 @@ import {
 } from "./constants.ts";
 
 export function appendTag(
-  backend: XOBackend,
+  store: XOStore,
   { snapshot, tag }: {
     snapshot: XOIdentifierToken;
     tag: XOElementToken;
   },
 ): void {
-  backend.add([
+  store.add([
     INDEX_SNAPSHOTS_TOKEN,
     snapshot,
     INDEX_TAGS_TOKEN,
     tag,
   ]);
-  backend.add([INDEX_TAGS_TOKEN, tag, snapshot]);
+  store.add([INDEX_TAGS_TOKEN, tag, snapshot]);
 }
 
 export function appendAttribute(
-  backend: XOBackend,
+  store: XOStore,
   { snapshot, attribute: { key, value } }: {
     snapshot: XOIdentifierToken;
     attribute: { key: XOAttributeToken; value: XOOutputToken };
@@ -51,7 +51,7 @@ export function appendAttribute(
     throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
   }
 
-  backend.add([
+  store.add([
     INDEX_SNAPSHOTS_TOKEN,
     snapshot,
     INDEX_ATTRIBUTES_TOKEN,
@@ -75,7 +75,7 @@ export function appendAttribute(
   }
 
   for (const string of reverseLookupStrings) {
-    backend.add([
+    store.add([
       INDEX_ATTRIBUTES_TOKEN,
       key,
       tokenizeValue(string),
@@ -85,7 +85,7 @@ export function appendAttribute(
 }
 
 export function appendChild(
-  backend: XOBackend,
+  store: XOStore,
   { snapshot = ROOT_SNAPSHOT_TOKEN, child: { token: child, index } }: {
     snapshot?: XOIdentifierToken;
     child: {
@@ -95,7 +95,7 @@ export function appendChild(
   },
 ) {
   if (child[XO_TOKEN_TYPE_INDEX] === XOTokenType.IDENTIFIER) {
-    backend.add([
+    store.add([
       INDEX_SNAPSHOTS_TOKEN,
       snapshot,
       INDEX_CHILDREN_TOKEN,
@@ -103,7 +103,7 @@ export function appendChild(
       child,
     ]);
 
-    backend.add([
+    store.add([
       INDEX_SNAPSHOTS_TOKEN,
       child,
       INDEX_PARENT_TOKEN,
@@ -114,7 +114,7 @@ export function appendChild(
     return;
   }
 
-  backend.add([
+  store.add([
     INDEX_SNAPSHOTS_TOKEN,
     snapshot,
     INDEX_CHILDREN_TOKEN,

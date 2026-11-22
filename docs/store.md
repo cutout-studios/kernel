@@ -5,11 +5,11 @@ this:
 
 ```tsx
 import { createStore } from "@cutout/store";
-import { XOMemoryBackend } from "@cutout/kernel/store/backends";
+import { XOMemoryStore } from "@cutout/kernel/document/store";
 
-const store = createStore({ backend: new XOMemoryBackend() });
+const document = createDocument({ store: new XOMemoryStore() });
 
-store.append(
+document.append(
   <>
     {/* Use whatever markup you want, even HTML. */}
     <user id={123}>
@@ -25,14 +25,14 @@ store.append(
 );
 
 // Later...
-import { rawText } from "@cutout/kernel/projections";
+import { rawText } from "@cutout/kernel/jsx/projection";
 import { parseSelector } from "@cutout/kernel/jsx/selector";
 
 const getUser = (userId) => parseSelector(`user#${userId}`);
 
 console.log(
   rawText(
-    store.select(getUser(123))[0], // get the stored IR subtree
+    document.select(getUser(123))[0], // get the stored IR subtree
   ), /*
         <user id="123">
           <username>bobadams</username>
