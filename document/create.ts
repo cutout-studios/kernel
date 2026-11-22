@@ -1,5 +1,6 @@
 /** @jsxImportSource @cutout/kernel */
 
+import type { XOStore } from "@cutout/kernel/document/store";
 import type { XOSelector } from "@cutout/kernel/jsx/selector";
 import {
   isPrimitiveToken,
@@ -12,7 +13,6 @@ import {
   type XOJSXToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import type { XOBackend } from "@cutout/kernel/store/backend";
 import { XOError, XOErrorCode } from "@internal";
 
 import { ROOT_SNAPSHOT_TOKEN } from "./constants.ts";
@@ -22,7 +22,7 @@ import { selectJSX, selectTokens } from "./snapshots.select.ts";
 import type { Store } from "./types.ts";
 
 type Options = {
-  backend: XOBackend;
+  store: XOStore;
 };
 
 /**
@@ -31,7 +31,7 @@ type Options = {
  * @param options Configuration options - currently just the backend used.
  * @returns The created XOStore.
  */
-export const create = ({ backend }: Options): Store => {
+export const create = ({ store }: Options): Store => {
   const getSnapshotToken = getIdentifierTokenFactory();
 
   return {
@@ -49,8 +49,8 @@ export const create = ({ backend }: Options): Store => {
           case XOTokenType.ELEMENT_OPEN: {
             const snapshot = getSnapshotToken();
 
-            appendTag(backend, { snapshot, tag: token });
-            appendChild(backend, {
+            appendTag(store, { snapshot, tag: token });
+            appendChild(store, {
               snapshot: parent,
               child: { token: snapshot, index: childCount },
             });
@@ -83,7 +83,7 @@ export const create = ({ backend }: Options): Store => {
           case XOTokenType.NULL:
             if (attributePointer) {
               appendAttribute(
-                backend,
+                store,
                 {
                   snapshot: parent,
                   attribute: { key: attributePointer, value: token },
@@ -98,7 +98,7 @@ export const create = ({ backend }: Options): Store => {
               throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
             }
 
-            appendChild(backend, {
+            appendChild(store, {
               snapshot: parent,
               child: { token, index: childCount },
             });
@@ -116,7 +116,7 @@ export const create = ({ backend }: Options): Store => {
 
       const snapshotIds = new Set<string>();
       for (const selector of selectors) {
-        for (const snapshot of selectTokens(backend, selector)) {
+        for (const snapshot of selectTokens(store, selector)) {
           snapshotIds.add(snapshot[XO_TOKEN_VALUE_INDEX]);
         }
       }
@@ -124,7 +124,7 @@ export const create = ({ backend }: Options): Store => {
       const result: XOJSXToken[] = [];
       for (const snapshotId of snapshotIds) {
         result.push(
-          selectJSX(backend, [XOTokenType.IDENTIFIER, snapshotId]),
+          selectJSX(store, [XOTokenType.IDENTIFIER, snapshotId]),
         );
       }
 

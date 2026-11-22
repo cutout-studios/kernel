@@ -1,16 +1,16 @@
 import { tokenizeValue } from "@cutout/kernel/jsx/token";
 import { assertArrayIncludes, assertEquals } from "@std/assert";
-import { MemoryBackend } from "./memory.ts";
+import { MemoryStore } from "./memory.ts";
 import type { TokenPath } from "./types.ts";
 
-const TEST_GROUP = "store/backend";
+const TEST_GROUP = "document/store";
 
 const tokenizePath = (path: (string | number)[]): TokenPath => {
   return path.map(tokenizeValue) as TokenPath;
 };
 
-Deno.test(`${TEST_GROUP} - MemoryBackend`, () => {
-  const backend = new MemoryBackend([]);
+Deno.test(`${TEST_GROUP} - MemoryStore`, () => {
+  const backend = new MemoryStore([]);
 
   const namePath = tokenizePath(["users", 123, "name", "bobadams"]);
   const zipPath = tokenizePath(["users", 123, "address", "zip", 12345]);

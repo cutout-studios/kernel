@@ -12,8 +12,8 @@ entrypoints=(
   jsx/selector/module.ts
   jsx/token/module.ts
   jsx/module.ts
-  store/backend/module.ts
-  store/module.ts
+  document/store/module.ts
+  document/module.ts
 )
 
 for m in "${entrypoints[@]}"; do

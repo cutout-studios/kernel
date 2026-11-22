@@ -1,16 +1,16 @@
 /** @jsxImportSource @cutout/kernel */
 
+import { XOMemoryStore } from "@cutout/kernel/document/store";
 import { rawText } from "@cutout/kernel/jsx/projection";
 import { parseSelector } from "@cutout/kernel/jsx/selector";
-import { XOMemoryBackend } from "@cutout/kernel/store/backend";
 import { assertSnapshot } from "@std/testing/snapshot";
 
 import { create } from "./create.ts";
 
-const TEST_MODULE = "store";
+const TEST_MODULE = "document";
 
 Deno.test(TEST_MODULE, async (test) => {
-  const store = create({ backend: new XOMemoryBackend() });
+  const store = create({ store: new XOMemoryStore() });
   const selector = parseSelector("user#1");
 
   store.append(
@@ -37,7 +37,7 @@ Deno.test(TEST_MODULE, async (test) => {
 });
 
 Deno.test(`${TEST_MODULE} — multiple children`, async (test) => {
-  const store = create({ backend: new XOMemoryBackend() });
+  const store = create({ store: new XOMemoryStore() });
   const selector = parseSelector("user#1");
 
   store.append(
@@ -51,7 +51,7 @@ Deno.test(`${TEST_MODULE} — multiple children`, async (test) => {
 });
 
 Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
-  const store = create({ backend: new XOMemoryBackend() });
+  const store = create({ store: new XOMemoryStore() });
   const selector = parseSelector("org#1");
 
   store.append(
@@ -67,13 +67,13 @@ Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
   await assertSnapshot(test, rawText(store.select(selector)[0]));
 });
 
-Deno.test("store — class selector", async (test) => {
-  const store = create({ backend: new XOMemoryBackend() });
+Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
+  const document = create({ store: new XOMemoryStore() });
   const employees = parseSelector(".employee");
   const admins = parseSelector(".admin");
   const employeeAdmins = parseSelector(".employee.admin");
 
-  store.append(
+  document.append(
     <>
       <user class="employee">
         <username>Bob</username>
@@ -89,25 +89,25 @@ Deno.test("store — class selector", async (test) => {
 
   await assertSnapshot(
     test,
-    store.select(employees).map((jsx) => rawText(jsx)),
+    document.select(employees).map((jsx) => rawText(jsx)),
   );
 
   await assertSnapshot(
     test,
-    store.select(admins).map((jsx) => rawText(jsx)),
+    document.select(admins).map((jsx) => rawText(jsx)),
   );
 
   await assertSnapshot(
     test,
-    store.select(employeeAdmins).map((jsx) => rawText(jsx)),
+    document.select(employeeAdmins).map((jsx) => rawText(jsx)),
   );
 });
 
-Deno.test("store — HTML", async (test) => {
-  const store = create({ backend: new XOMemoryBackend() });
+Deno.test(`${TEST_MODULE} — HTML`, async (test) => {
+  const document = create({ store: new XOMemoryStore() });
   const headerSelector = parseSelector("header");
 
-  store.append(
+  document.append(
     <html>
       <head>
         <title>Hello, World!</title>
@@ -122,5 +122,5 @@ Deno.test("store — HTML", async (test) => {
     </html>,
   );
 
-  await assertSnapshot(test, rawText(store.select(headerSelector)[0]));
+  await assertSnapshot(test, rawText(document.select(headerSelector)[0]));
 });

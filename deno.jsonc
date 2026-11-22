@@ -2,16 +2,16 @@
   "name": "@cutout/kernel",
   "version": "0.0.1",
   "exports": {
+    "./document": "./document/module.ts",
+    "./document/store": "./document/store/module.ts",
     // "./element": "./element/module.ts",
-    // "./element/style": "./element/style/module.ts",
+    // "./element/stylesheet": "./element/stylesheet/module.ts",
     "./jsx-runtime": "./jsx/module.ts",
     "./jsx/jsx-runtime": "./jsx/module.ts",
     "./jsx/projection": "./jsx/projection/module.ts",
     "./jsx/selector": "./jsx/selector/module.ts",
-    "./jsx/token": "./jsx/token/module.ts",
+    "./jsx/token": "./jsx/token/module.ts"
     // "./server": "./server/module.ts",
-    "./store": "./store/module.ts",
-    "./store/backend": "./store/backend/module.ts"
   },
   "fmt": {
     "indentWidth": 2,

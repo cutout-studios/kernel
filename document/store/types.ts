@@ -24,7 +24,7 @@ export type TokenSegment =
  * A universal key-value token data interface,
  * to provide persistence to an XOStore.
  */
-export interface Backend {
+export interface Store {
   /**
    * Appends a new path to the backend.
    * @param path The path to append.

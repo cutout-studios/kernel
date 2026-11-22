@@ -1,3 +1,4 @@
+import type { XOStore, XOStorePath } from "@cutout/kernel/document/store";
 import type {
   XOAttributeSelector,
   XOSelector,
@@ -16,7 +17,6 @@ import {
   type XOPrimitiveToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import type { XOBackend, XOBackendPath } from "@cutout/kernel/store/backend";
 import { XOError, XOErrorCode } from "@internal";
 
 import {
@@ -37,7 +37,7 @@ type SelectionFrame = {
 };
 
 export function selectJSX(
-  backend: XOBackend,
+  store: XOStore,
   snapshot: XOIdentifierToken,
 ): XOJSXToken {
   return [
@@ -54,7 +54,7 @@ export function selectJSX(
           continue;
         }
 
-        const snapshotPathGenerator = backend.list([
+        const snapshotPathGenerator = store.list([
           INDEX_SNAPSHOTS_TOKEN,
           frame.token,
         ]);
@@ -69,7 +69,7 @@ export function selectJSX(
             throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
           }
 
-          const [indexNameToken, keyToken, valueToken] = path as XOBackendPath;
+          const [indexNameToken, keyToken, valueToken] = path as XOStorePath;
 
           switch (indexNameToken[XO_TOKEN_VALUE_INDEX]) {
             case INDEX_TAGS_LABEL: {
@@ -116,7 +116,7 @@ export function selectJSX(
 }
 
 export function selectTokens(
-  backend: XOBackend,
+  store: XOStore,
   { attributes, tag }: XOSelector,
 ): XOIdentifierToken[] {
   let result;
@@ -130,7 +130,7 @@ export function selectTokens(
       const attributeSet = new Set<string>();
       const prefix = value ? [key, value] : [key];
       for (
-        const path of backend.list([INDEX_ATTRIBUTES_TOKEN, ...prefix]) ??
+        const path of store.list([INDEX_ATTRIBUTES_TOKEN, ...prefix]) ??
           []
       ) {
         if (isPromiseToken(path)) {
@@ -149,7 +149,7 @@ export function selectTokens(
   if (tag) {
     const tagSet = new Set<string>();
     for (
-      const path of backend.list([INDEX_TAGS_TOKEN, tag]) ?? []
+      const path of store.list([INDEX_TAGS_TOKEN, tag]) ?? []
     ) {
       if (isPromiseToken(path)) {
         throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
