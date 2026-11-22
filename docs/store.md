@@ -26,13 +26,13 @@ document.append(
 
 // Later...
 import { rawText } from "@cutout/kernel/jsx/projection";
-import { parseSelector } from "@cutout/kernel/jsx/selector";
+import { createSelector } from "@cutout/kernel/selector";
 
-const getUser = (userId) => parseSelector(`user#${userId}`);
+const userSelector = (userId) => createSelector(`user#${userId}`);
 
 console.log(
   rawText(
-    document.select(getUser(123))[0], // get the stored IR subtree
+    document.select(userSelector(123))[0], // get the stored IR subtree
   ), /*
         <user id="123">
           <username>bobadams</username>

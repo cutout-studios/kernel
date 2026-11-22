@@ -9,11 +9,11 @@ printf '%8s B  %s\n' "$core" "internal/module.ts"
 
 entrypoints=(
   jsx/projection/module.ts
-  jsx/selector/module.ts
   jsx/token/module.ts
   jsx/module.ts
   document/store/module.ts
   document/module.ts
+  selector/module.ts
 )
 
 for m in "${entrypoints[@]}"; do

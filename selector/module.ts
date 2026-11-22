@@ -6,4 +6,4 @@ export {
   AttributeOperator as XOAttributeSelectorOperator,
   Combinator as XOSelectorCombinator,
 } from "./constants.ts";
-export { parse as parseSelector } from "./parse.ts";
+export { create as createSelector } from "./create.ts";

@@ -2,7 +2,7 @@
 
 import { XOMemoryStore } from "@cutout/kernel/document/store";
 import { rawText } from "@cutout/kernel/jsx/projection";
-import { parseSelector } from "@cutout/kernel/jsx/selector";
+import { createSelector } from "@cutout/kernel/selector";
 import { assertSnapshot } from "@std/testing/snapshot";
 
 import { create } from "./create.ts";
@@ -11,7 +11,7 @@ const TEST_MODULE = "document";
 
 Deno.test(TEST_MODULE, async (test) => {
   const store = create({ store: new XOMemoryStore() });
-  const selector = parseSelector("user#1");
+  const selector = createSelector("user#1");
 
   store.append(
     <>
@@ -38,7 +38,7 @@ Deno.test(TEST_MODULE, async (test) => {
 
 Deno.test(`${TEST_MODULE} — multiple children`, async (test) => {
   const store = create({ store: new XOMemoryStore() });
-  const selector = parseSelector("user#1");
+  const selector = createSelector("user#1");
 
   store.append(
     <user id={1}>
@@ -52,7 +52,7 @@ Deno.test(`${TEST_MODULE} — multiple children`, async (test) => {
 
 Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
   const store = create({ store: new XOMemoryStore() });
-  const selector = parseSelector("org#1");
+  const selector = createSelector("org#1");
 
   store.append(
     <org id={1}>
@@ -69,9 +69,9 @@ Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
 
 Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
   const document = create({ store: new XOMemoryStore() });
-  const employees = parseSelector(".employee");
-  const admins = parseSelector(".admin");
-  const employeeAdmins = parseSelector(".employee.admin");
+  const employees = createSelector(".employee");
+  const admins = createSelector(".admin");
+  const employeeAdmins = createSelector(".employee.admin");
 
   document.append(
     <>
@@ -105,7 +105,7 @@ Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
 
 Deno.test(`${TEST_MODULE} — HTML`, async (test) => {
   const document = create({ store: new XOMemoryStore() });
-  const headerSelector = parseSelector("header");
+  const headerSelector = createSelector("header");
 
   document.append(
     <html>

@@ -9,9 +9,9 @@
     "./jsx-runtime": "./jsx/module.ts",
     "./jsx/jsx-runtime": "./jsx/module.ts",
     "./jsx/projection": "./jsx/projection/module.ts",
-    "./jsx/selector": "./jsx/selector/module.ts",
-    "./jsx/token": "./jsx/token/module.ts"
+    "./jsx/token": "./jsx/token/module.ts",
     // "./server": "./server/module.ts",
+    "./selector": "./selector/module.ts"
   },
   "fmt": {
     "indentWidth": 2,
