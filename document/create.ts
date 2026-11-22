@@ -1,7 +1,6 @@
 /** @jsxImportSource @cutout/kernel */
 
 import type { XOStore } from "@cutout/kernel/document/store";
-import type { XOSelector } from "@cutout/kernel/jsx/selector";
 import {
   isPrimitiveToken,
   tokenizeValue,
@@ -13,6 +12,7 @@ import {
   type XOJSXToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
+import type { XOSelector } from "@cutout/kernel/selector";
 import { XOError, XOErrorCode } from "@internal";
 
 import { ROOT_SNAPSHOT_TOKEN } from "./constants.ts";

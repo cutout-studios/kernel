@@ -1,8 +1,4 @@
 import type { XOStore, XOStorePath } from "@cutout/kernel/document/store";
-import type {
-  XOAttributeSelector,
-  XOSelector,
-} from "@cutout/kernel/jsx/selector";
 import {
   isPromiseToken,
   tokenizeValue,
@@ -17,6 +13,7 @@ import {
   type XOPrimitiveToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
+import type { XOAttributeSelector, XOSelector } from "@cutout/kernel/selector";
 import { XOError, XOErrorCode } from "@internal";
 
 import {
