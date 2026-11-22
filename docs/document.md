@@ -4,12 +4,13 @@
 this:
 
 ```tsx
-import { createStore } from "@cutout/store";
-import { XOMemoryStore } from "@cutout/kernel/document/store";
+import { createDocument } from "@cutout/kernel/document";
+import { appendElement } from "@cutout/kernel/element";
 
-const document = createDocument({ store: new XOMemoryStore() });
+const document = createDocument();
 
-document.append(
+appendElement(
+  document,
   <>
     {/* Use whatever markup you want, even HTML. */}
     <user id={123}>
@@ -26,13 +27,13 @@ document.append(
 
 // Later...
 import { rawText } from "@cutout/kernel/jsx/projection";
-import { createSelector } from "@cutout/kernel/selector";
+import { createSelector, querySelector } from "@cutout/kernel/selector";
 
 const userSelector = (userId) => createSelector(`user#${userId}`);
 
 console.log(
   rawText(
-    document.select(userSelector(123))[0], // get the stored IR subtree
+    querySelector(document, userSelector(123)), // get the stored IR subtree
   ), /*
         <user id="123">
           <username>bobadams</username>
