@@ -1,0 +1,31 @@
+export const snapshot = {};
+
+snapshot[`store 1`] = `'<user id="1"><username>Bob</username></user>'`;
+
+snapshot[`store 2`] = `'<user id="1"><username>Bobby</username></user>'`;
+
+snapshot[`store — multiple children 1`] = `'<user id="1"><username>Bob</username><email>bob@example.com</email><role>admin</role></user>'`;
+
+snapshot[`store — deep nesting 1`] = `'<org id="1"><team><member><name>Bob</name></member></team></org>'`;
+
+snapshot[`store — class selector 1`] = `
+[
+  '<user class="admin employee"><username>Janet</username></user>',
+  '<user class="employee"><username>Bob</username></user>',
+]
+`;
+
+snapshot[`store — class selector 2`] = `
+[
+  '<user class="admin"><username>Ross</username></user>',
+  '<user class="admin employee"><username>Janet</username></user>',
+]
+`;
+
+snapshot[`store — class selector 3`] = `
+[
+  '<user class="admin employee"><username>Janet</username></user>',
+]
+`;
+
+snapshot[`store — HTML 1`] = `"<header>Hello <i>World</i>!</header>"`;
