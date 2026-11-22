@@ -68,8 +68,8 @@ Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
 });
 
 Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
-const document = create({ store: new XOMemoryStore() });
-const employees = parseSelector(".employee");
+  const document = create({ store: new XOMemoryStore() });
+  const employees = parseSelector(".employee");
   const admins = parseSelector(".admin");
   const employeeAdmins = parseSelector(".employee.admin");
 

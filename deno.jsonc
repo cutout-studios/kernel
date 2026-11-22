@@ -10,7 +10,7 @@
     "./jsx/jsx-runtime": "./jsx/module.ts",
     "./jsx/projection": "./jsx/projection/module.ts",
     "./jsx/selector": "./jsx/selector/module.ts",
-    "./jsx/token": "./jsx/token/module.ts",
+    "./jsx/token": "./jsx/token/module.ts"
     // "./server": "./server/module.ts",
   },
   "fmt": {
