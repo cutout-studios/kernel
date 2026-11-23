@@ -1,4 +1,13 @@
-import type { XOStore, XOStorePath } from "@cutout/kernel/document/store";
+import type { XODocument } from "@cutout/kernel/document";
+import type { XOJSX } from "@cutout/kernel/jsx";
+import type { XOSelector } from "@cutout/kernel/selector";
+
+// TODO: see document snapshot.select.ts
+export const query = (
+  source: XOJSX | XODocument,
+  selector: XOSelector,
+): XOJSX => {
+  import type { XOStore, XOStorePath } from "@cutout/kernel/document/store";
 import {
   isPromiseToken,
   tokenizeValue,
@@ -196,4 +205,22 @@ function _attributeSpecificityHeuristic(
 
   return (rightValue.length || rightKeyValue.length) -
     (leftValue.length || leftKeyValue.length);
+}
+
+};
+
+
+// ISSUE(#100): properly resolve CSS combinators and attribute comparators
+function _checkSelectorSupport(selectors: XOSelector[]) {
+  for (const { attributes, combinator, child } of selectors) {
+    if (combinator || child) {
+      throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+    }
+
+    for (const { operator, caseSensitive } of attributes) {
+      if (operator || caseSensitive !== undefined) {
+        throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+      }
+    }
+  }
 }

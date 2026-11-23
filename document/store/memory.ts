@@ -1,7 +1,11 @@
 import { type XONullToken, XOTokenType } from "@cutout/kernel/jsx/token";
-import type { Store, TokenPath, TokenSegment } from "./types.ts";
+import type { Store, StorePath, StoreSegment } from "./types.ts";
 
 type SerializedPathTrie = Map<string, SerializedPathTrie>;
+
+export const createMemoryStore = (): Store => {
+
+};
 
 /**
  * A rudimentary memory-only implementation of the XOBackend.
@@ -12,13 +16,13 @@ export class MemoryStore implements Store {
    * Initialize the XOMemoryBackend with a collection of paths.
    * @param paths The paths to add to the XOMemoryBackend.
    */
-  constructor(paths?: TokenPath[]) {
+  constructor(paths?: StorePath[]) {
     for (const path of paths ?? []) {
       this.add(path);
     }
   }
 
-  add(path: TokenPath): XONullToken {
+  add(path: StorePath): XONullToken {
     this.#scanCache.clear();
 
     let pointer = this.#pathTrie;
@@ -36,8 +40,8 @@ export class MemoryStore implements Store {
   }
 
   list(
-    prefix: TokenPath,
-  ): Generator<TokenPath> | undefined {
+    prefix: StorePath,
+  ): Generator<StorePath> | undefined {
     const cacheKey = JSON.stringify(prefix);
 
     if (this.#scanCache.has(cacheKey)) {
@@ -58,7 +62,7 @@ export class MemoryStore implements Store {
   }
 
   #pathTrie: SerializedPathTrie = new Map();
-  #resolvePath(path: TokenPath): SerializedPathTrie | undefined {
+  #resolvePath(path: StorePath): SerializedPathTrie | undefined {
     if (path.length === 0) return this.#pathTrie;
 
     let pointer: SerializedPathTrie | undefined = this.#pathTrie;
@@ -72,10 +76,10 @@ export class MemoryStore implements Store {
   }
 
   #scanCache = new Map();
-  #flatten(root: SerializedPathTrie): TokenPath[] {
-    const result: TokenPath[] = [];
+  #flatten(root: SerializedPathTrie): StorePath[] {
+    const result: StorePath[] = [];
 
-    const stack: [TokenSegment[], SerializedPathTrie][] = [[[], root]];
+    const stack: [StoreSegment[], SerializedPathTrie][] = [[[], root]];
     while (stack.length) {
       const [currentKeyPath, currentSubtrie] = stack.pop() ?? [];
 

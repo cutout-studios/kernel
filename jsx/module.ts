@@ -6,6 +6,7 @@
  * intermediate representation (IR).
  */
 
+import type { XOElement } from "@cutout/kernel/element";
 import {
   isJSXToken,
   isOutputToken,
@@ -43,22 +44,7 @@ export namespace JSX {
   }
 }
 
-/**
- * Custom elements. Define an element function and TypeScript will infer its attributes.
- *
- * @example
- * ```tsx
- * const MyElement = defineElement<{ hello: string; }>(
- *   attributes => <div>{attributes.hello}</div>
- * );
- *
- * const correct = <MyElement hello="123" /> // Works!
- * const incorrect = <MyElement hello={123} /> // Type Error.
- * ```
- */
-export type XOElementFunction<A = Record<string, unknown>> = (
-  attributes: A,
-) => XOJSXToken;
+export type XOJSX = XOJSXToken;
 
 /**
  * The core transformation function for `@cutout/kernel`.
@@ -76,10 +62,10 @@ export type XOElementFunction<A = Record<string, unknown>> = (
  * @returns A generator token representing the element structure.
  */
 export const jsx = (
-  element: XOElementFunction | string,
+  element: XOElement | string,
   _elementAttributes: { [key: string]: unknown },
   ..._elementChildren: unknown[]
-): XOJSXToken => {
+): XOJSX => {
   const _generator = function* () {
     // 1. Normalize children across "react" and "react-jsx" pragma types.
     //    We separate children from the rest of the attributes to handle them separately.

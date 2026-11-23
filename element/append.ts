@@ -1,3 +1,89 @@
+import type { XODocument } from "@cutout/kernel/document";
+import type { XOJSX } from "@cutout/kernel/jsx";
+
+import type { Element } from "./types.ts";
+
+// TODO: see document/snapshots.append.ts
+export const append = <T extends XOJSX | XODocument>(
+  target: T,
+  value: XOJSX | Element,
+): T => {
+  const appendStack: XOIdentifierToken[] = [ROOT_SNAPSHOT_TOKEN];
+  const childCounter = _createChildIndexCounter();
+  childCounter.init(ROOT_SNAPSHOT_TOKEN);
+
+  let attributePointer: XOAttributeToken | null = null;
+  for (const token of jsxGenerator[XO_TOKEN_VALUE_INDEX]()) {
+    const parent = appendStack.at(-1) ?? ROOT_SNAPSHOT_TOKEN;
+    const childCount = childCounter.get(parent);
+
+    switch (token[XO_TOKEN_TYPE_INDEX]) {
+      case XOTokenType.ELEMENT_OPEN: {
+        const snapshot = getSnapshotToken();
+
+        appendTag(store, { snapshot, tag: token });
+        appendChild(store, {
+          snapshot: parent,
+          child: { token: snapshot, index: childCount },
+        });
+
+        childCounter.init(snapshot);
+        appendStack.push(snapshot);
+
+        childCounter.increment(parent);
+
+        attributePointer = null;
+        break;
+      }
+      case XOTokenType.ATTRIBUTE:
+        if (token[XO_TOKEN_VALUE_INDEX] !== XO_CHILDREN_LABEL) {
+          attributePointer = token;
+        }
+        break;
+      case XOTokenType.ELEMENT_CLOSE:
+        appendStack.pop();
+        /* falls through */
+      case XOTokenType.UNDEFINED:
+        attributePointer = null;
+        break;
+      case XOTokenType.BOOLEAN:
+      case XOTokenType.STRING:
+      case XOTokenType.NUMBER:
+      case XOTokenType.SYMBOL:
+      case XOTokenType.ARRAY:
+      case XOTokenType.OBJECT:
+      case XOTokenType.NULL:
+        if (attributePointer) {
+          appendAttribute(
+            store,
+            {
+              snapshot: parent,
+              attribute: { key: attributePointer, value: token },
+            },
+          );
+
+          attributePointer = null;
+          break;
+        }
+
+        if (!isPrimitiveToken(token)) {
+          throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+        }
+
+        appendChild(store, {
+          snapshot: parent,
+          child: { token, index: childCount },
+        });
+        childCounter.increment(parent);
+        break;
+      case XOTokenType.PROMISE:
+        throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+      case XOTokenType.FUNCTION:
+        throw new XOError(XOErrorCode.DATA_MALFORMED);
+    }
+  }
+};
+
 import type { XOStore } from "@cutout/kernel/document/store";
 import {
   isPrimitiveToken,
