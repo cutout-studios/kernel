@@ -1,3 +1,5 @@
+import type { ERROR_CODES } from "./constants.ts";
+
 /** @internal */
 export type AnyFunction = (...args: never[]) => unknown;
 
@@ -15,6 +17,9 @@ export type OneOrMany<T> = T | [first: T, ...rest: T[]];
 
 /** @internal */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+/** @internal */
+export type ErrorCode = typeof ERROR_CODES[number];
 
 /** @internal */
 export interface CallSite {

@@ -3,9 +3,18 @@ import {
   type XOStringToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import { unionGuardFactory, XOError, XOErrorCode } from "@internal";
+import {
+  unionGuardFactory,
+  XO_DATA_MALFORMED_ERROR_CODE,
+  XO_OPERATION_UNSUPPORTED_ERROR_CODE,
+  XOError,
+} from "@internal";
 
-import { COMBINATORS, ATTRIBUTE_OPERATORS, DESCENDANT_COMBINATOR } from "./constants.ts";
+import {
+  ATTRIBUTE_OPERATORS,
+  COMBINATORS,
+  DESCENDANT_COMBINATOR,
+} from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";
 
 /**
@@ -15,7 +24,7 @@ import type { AttributeSelector, Selector } from "./types.ts";
  */
 export const create = (query: string): Selector[] => {
   if (/[:@]/.test(query)) {
-    throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+    throw new XOError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
   }
 
   const listRegex = /([^,]+)(?:,|$)/g;
@@ -37,7 +46,7 @@ export const create = (query: string): Selector[] => {
       pointer = pointer ? (pointer[3] = result) : (root = result);
     }
 
-    if (!root) throw new XOError(XOErrorCode.DATA_MALFORMED);
+    if (!root) throw new XOError(XO_DATA_MALFORMED_ERROR_CODE);
     selectors.push(root);
   }
 
@@ -79,7 +88,7 @@ function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
   }
 
   if (_isCombinator(combinator)) result[2] = combinator;
-  else if (combinator) throw new XOError(XOErrorCode.DATA_MALFORMED);
+  else if (combinator) throw new XOError(XO_DATA_MALFORMED_ERROR_CODE);
 
   return result;
 }
