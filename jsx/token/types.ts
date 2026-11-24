@@ -1,6 +1,5 @@
 import type { AnyFunction } from "@internal";
 import type {
-  TOKENS,
   ARRAY_TOKEN,
   ATTRIBUTE_TOKEN,
   BOOLEAN_TOKEN,
@@ -15,6 +14,7 @@ import type {
   PROMISE_TOKEN,
   STRING_TOKEN,
   SYMBOL_TOKEN,
+  TOKENS,
   UNDEFINED_TOKEN,
   UNKNOWN_TOKEN,
 } from "./constants.ts";

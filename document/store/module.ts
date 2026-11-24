@@ -1,4 +1,4 @@
-export { MemoryStore as XOMemoryStore } from "./memory.ts";
+export { createMemoryStore } from "./memory.ts";
 export type {
   Store as XOStore,
   StorePath as XOStorePath,

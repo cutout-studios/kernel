@@ -209,7 +209,6 @@
 
 // };
 
-
 // // ISSUE(#100): properly resolve CSS combinators and attribute comparators
 // function _checkSelectorSupport(selectors: XOSelector[]) {
 //   for (const { attributes, combinator, child } of selectors) {

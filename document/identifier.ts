@@ -1,4 +1,7 @@
-import { XO_IDENTIFIER_TOKEN, type XOIdentifierToken } from "@cutout/kernel/jsx/token";
+import {
+  XO_IDENTIFIER_TOKEN,
+  type XOIdentifierToken,
+} from "@cutout/kernel/jsx/token";
 import { XOError } from "@internal";
 
 import {

@@ -6,6 +6,5 @@ export const enumGuardFactory =
 
 /** @internal */
 export const unionGuardFactory =
-  <T extends readonly unknown[]>(unionList: T) => 
-  (value: unknown): value is T[number] =>
-    unionList.includes(value)
+  <T extends readonly unknown[]>(unionList: T) =>
+  (value: unknown): value is T[number] => unionList.includes(value);
