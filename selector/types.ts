@@ -3,7 +3,11 @@ import type {
   XOElementToken,
   XOStringToken,
 } from "@cutout/kernel/jsx/token";
-import type { AttributeOperator, Combinator } from "./constants.ts";
+import type { ATTRIBUTE_OPERATORS, COMBINATORS } from "./constants.ts";
+
+export type Combinator = typeof COMBINATORS[number];
+
+export type AttributeOperator = typeof ATTRIBUTE_OPERATORS[number];
 
 /**
  * Represents a JSX document selector string.
@@ -13,7 +17,7 @@ export type Selector = [
   tag?: XOElementToken,
   attributes?: AttributeSelector[],
   combinator?: Combinator,
-  child?: Selector
+  child?: Selector,
 ];
 
 /**
@@ -24,5 +28,5 @@ export type AttributeSelector = [
   key: XOAttributeToken,
   value?: XOStringToken,
   operator?: AttributeOperator,
-  caseSensitive?: boolean
+  caseSensitive?: boolean,
 ];

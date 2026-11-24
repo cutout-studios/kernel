@@ -3,9 +3,9 @@ import {
   type XOStringToken,
   XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import { enumGuardFactory, XOError, XOErrorCode } from "@internal";
+import { unionGuardFactory, XOError, XOErrorCode } from "@internal";
 
-import { AttributeOperator, Combinator } from "./constants.ts";
+import { COMBINATORS, ATTRIBUTE_OPERATORS, DESCENDANT_COMBINATOR } from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";
 
 /**
@@ -45,11 +45,11 @@ export const create = (query: string): Selector[] => {
 };
 
 // ISSUE(#97): properly handle CSS.escape'd characters
-const _isCombinator = enumGuardFactory(Combinator);
+const _isCombinator = unionGuardFactory(COMBINATORS);
 function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
   const { c: rawCombinator, s: subquery } = groups!;
   const combinator = rawCombinator?.trim() ||
-    (rawCombinator ? Combinator.DESCENDANT : undefined);
+    (rawCombinator ? DESCENDANT_COMBINATOR : undefined);
 
   const result: Selector = [];
   let piece: RegExpExecArray | null;
@@ -84,7 +84,7 @@ function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
   return result;
 }
 
-const _isAttributeOperator = enumGuardFactory(AttributeOperator);
+const _isAttributeOperator = unionGuardFactory(ATTRIBUTE_OPERATORS);
 function _parseAttribute(
   rawAttributeText: string,
 ): AttributeSelector | undefined {

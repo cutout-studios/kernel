@@ -17,6 +17,6 @@ entrypoints=(
 )
 
 for m in "${entrypoints[@]}"; do
-  s=$(size "$m" --external @internal)
+  s=$(size "$m" --external @internal @cutout)
   printf '%8s B  %s\n' "$s" "$m"
 done
