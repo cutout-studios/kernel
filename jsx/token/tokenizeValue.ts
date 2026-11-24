@@ -5,20 +5,32 @@
  */
 
 import type { AnyFunction } from "@internal";
-import { TokenType } from "./constants.ts";
+import {
+  ARRAY_TOKEN,
+  BOOLEAN_TOKEN,
+  FUNCTION_TOKEN,
+  NULL_TOKEN,
+  NUMBER_TOKEN,
+  OBJECT_TOKEN,
+  PROMISE_TOKEN,
+  STRING_TOKEN,
+  SYMBOL_TOKEN,
+  UNDEFINED_TOKEN,
+  UNKNOWN_TOKEN,
+} from "./constants.ts";
 import type { OutputToken, UnknownToken } from "./types.ts";
 
-type TokenForValue<T> = T extends number | bigint ? [TokenType.NUMBER, T]
-  : T extends string ? [TokenType.STRING, T]
-  : T extends boolean ? [TokenType.BOOLEAN, T]
-  : T extends symbol ? [TokenType.SYMBOL, T]
-  : T extends undefined ? [TokenType.UNDEFINED, undefined]
-  : T extends AnyFunction ? [TokenType.FUNCTION, T]
-  : T extends null ? [TokenType.NULL, null]
-  : T extends readonly unknown[] ? [TokenType.ARRAY, T]
-  : T extends Promise<unknown> ? [TokenType.PROMISE, T]
-  : T extends object ? [TokenType.OBJECT, T]
-  : [TokenType.UNKNOWN, T];
+type TokenForValue<T> = T extends number | bigint ? [typeof NUMBER_TOKEN, T]
+  : T extends string ? [typeof STRING_TOKEN, T]
+  : T extends boolean ? [typeof BOOLEAN_TOKEN, T]
+  : T extends symbol ? [typeof SYMBOL_TOKEN, T]
+  : T extends undefined ? [typeof UNDEFINED_TOKEN, undefined]
+  : T extends AnyFunction ? [typeof FUNCTION_TOKEN, T]
+  : T extends null ? [typeof NULL_TOKEN, null]
+  : T extends readonly unknown[] ? [typeof ARRAY_TOKEN, T]
+  : T extends Promise<unknown> ? [typeof PROMISE_TOKEN, T]
+  : T extends object ? [typeof OBJECT_TOKEN, T]
+  : [typeof UNKNOWN_TOKEN, T];
 
 /**
  * Attempts to convert an arbitrary value into a `XOToken`.
@@ -29,7 +41,7 @@ type TokenForValue<T> = T extends number | bigint ? [TokenType.NUMBER, T]
  * @example
  * ```ts
  * const [type, value] = tokenizeValue("hello");
- *   // type -> XOTokenType.String
+ *   // type -> XO_STRING_TOKEN
  *   // value -> "hello"
  * ```
  */
@@ -40,28 +52,28 @@ function _tokenizeValue(value: unknown): OutputToken | UnknownToken {
   switch (typeof value) {
     case "bigint":
     case "number":
-      return [TokenType.NUMBER, value as number];
+      return [NUMBER_TOKEN, value as number];
     case "string":
-      return [TokenType.STRING, value as string];
+      return [STRING_TOKEN, value as string];
     case "boolean":
-      return [TokenType.BOOLEAN, value as boolean];
+      return [BOOLEAN_TOKEN, value as boolean];
     case "symbol":
-      return [TokenType.SYMBOL, value as symbol];
+      return [SYMBOL_TOKEN, value as symbol];
     case "undefined":
-      return [TokenType.UNDEFINED, undefined];
+      return [UNDEFINED_TOKEN, undefined];
     case "function":
-      return [TokenType.FUNCTION, value as AnyFunction];
+      return [FUNCTION_TOKEN, value as AnyFunction];
     case "object":
       if (value === null) {
-        return [TokenType.NULL, null];
+        return [NULL_TOKEN, null];
       } else if (Array.isArray(value)) {
-        return [TokenType.ARRAY, value];
+        return [ARRAY_TOKEN, value];
       } else if (value instanceof Promise) {
-        return [TokenType.PROMISE, value];
+        return [PROMISE_TOKEN, value];
       }
 
-      return [TokenType.OBJECT, value];
+      return [OBJECT_TOKEN, value];
     default:
-      return [TokenType.UNKNOWN, value];
+      return [UNKNOWN_TOKEN, value];
   }
 }

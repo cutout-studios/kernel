@@ -1,7 +1,9 @@
 import {
   tokenizeValue,
+  XO_ATTRIBUTE_TOKEN,
+  XO_ELEMENT_OPEN_TOKEN,
+  XO_STRING_TOKEN,
   type XOStringToken,
-  XOTokenType,
 } from "@cutout/kernel/jsx/token";
 import {
   unionGuardFactory,
@@ -70,16 +72,16 @@ function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
     const { t: tag, i: id, c: className, a: attribute } = piece.groups!;
     if (id || className || attribute) result[1] ??= [];
 
-    if (tag) result[0] = [XOTokenType.ELEMENT_OPEN, tag];
+    if (tag) result[0] = [XO_ELEMENT_OPEN_TOKEN, tag];
     else if (id) {
       result[1]!.push([
-        [XOTokenType.ATTRIBUTE, "id"],
-        [XOTokenType.STRING, id],
+        [XO_ATTRIBUTE_TOKEN, "id"],
+        [XO_STRING_TOKEN, id],
       ]);
     } else if (className) {
       result[1]!.push([
-        [XOTokenType.ATTRIBUTE, "class"],
-        [XOTokenType.STRING, className],
+        [XO_ATTRIBUTE_TOKEN, "class"],
+        [XO_STRING_TOKEN, className],
       ]);
     } else if (attribute) {
       const parsed = _parseAttribute(attribute);
@@ -103,7 +105,7 @@ function _parseAttribute(
   if (!attributeMatch?.groups) return;
   const { k: key, v: value, o: operator, c: casing } = attributeMatch.groups;
   if (!key) return;
-  const result: AttributeSelector = [[XOTokenType.ATTRIBUTE, key]];
+  const result: AttributeSelector = [[XO_ATTRIBUTE_TOKEN, key]];
   if (value) {
     result[1] = tokenizeValue(
       value.replace(/^["']|["']$/g, ""),

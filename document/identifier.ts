@@ -1,4 +1,4 @@
-import { type XOIdentifierToken, XOTokenType } from "@cutout/kernel/jsx/token";
+import { XO_IDENTIFIER_TOKEN, type XOIdentifierToken } from "@cutout/kernel/jsx/token";
 import { XOError } from "@internal";
 
 import {
@@ -47,7 +47,7 @@ export function getIdentifierTokenFactory(
     result.set(_timeToBytes(lastTime, timeByteLength));
     result.set(lastRandom, timeByteLength);
 
-    return [XOTokenType.IDENTIFIER, _encode(result)];
+    return [XO_IDENTIFIER_TOKEN, _encode(result)];
   };
 }
 

@@ -1,7 +1,19 @@
 import {
+XO_ARRAY_TOKEN,
+XO_ATTRIBUTE_TOKEN,
+  XO_BOOLEAN_TOKEN,
   XO_CHILDREN_LABEL,
+  XO_ELEMENT_CLOSE_TOKEN,
+  XO_ELEMENT_OPEN_TOKEN,
   XO_FRAGMENT_LABEL,
-  XOTokenType,
+  XO_FUNCTION_TOKEN,
+  XO_NULL_TOKEN,
+  XO_NUMBER_TOKEN,
+  XO_OBJECT_TOKEN,
+  XO_PROMISE_TOKEN,
+  XO_STRING_TOKEN,
+  XO_SYMBOL_TOKEN,
+  XO_UNDEFINED_TOKEN,
 } from "@cutout/kernel/jsx/token";
 
 import type { Projection } from "./types.ts";
@@ -31,27 +43,27 @@ export const rawText: Projection<string> = (jsx): string => {
 
   for (const [type, value] of jsx[1]()) {
     switch (type) {
-      case XOTokenType.ELEMENT_OPEN:
+      case XO_ELEMENT_OPEN_TOKEN:
         _openElement(state, value);
         break;
-      case XOTokenType.ELEMENT_CLOSE:
+      case XO_ELEMENT_CLOSE_TOKEN:
         _closeElement(state, value);
         break;
-      case XOTokenType.ATTRIBUTE:
+      case XO_ATTRIBUTE_TOKEN:
         _addAttribute(state, value);
         break;
-      case XOTokenType.STRING:
-      case XOTokenType.SYMBOL:
-      case XOTokenType.FUNCTION:
-      case XOTokenType.OBJECT:
-      case XOTokenType.ARRAY:
-      case XOTokenType.BOOLEAN:
-      case XOTokenType.NUMBER:
+      case XO_STRING_TOKEN:
+      case XO_SYMBOL_TOKEN:
+      case XO_FUNCTION_TOKEN:
+      case XO_OBJECT_TOKEN:
+      case XO_ARRAY_TOKEN:
+      case XO_BOOLEAN_TOKEN:
+      case XO_NUMBER_TOKEN:
         _addAttributeValue(state, value);
         break;
-      case XOTokenType.NULL:
-      case XOTokenType.UNDEFINED:
-      case XOTokenType.PROMISE:
+      case XO_NULL_TOKEN:
+      case XO_UNDEFINED_TOKEN:
+      case XO_PROMISE_TOKEN:
       default:
         break;
     }

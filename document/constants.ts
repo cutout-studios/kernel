@@ -1,8 +1,8 @@
 import {
   tokenizeValue,
   XO_CHILDREN_LABEL,
+  XO_IDENTIFIER_TOKEN,
   type XOIdentifierToken,
-  XOTokenType,
 } from "@cutout/kernel/jsx/token";
 
 export const DEFAULT_IDENTIFIER_BYTE_LENGTH = 16;
@@ -15,7 +15,7 @@ export const BYTE_DEPTH = BIN_DEPTH ** BIN_TO_BYTES;
 export const TIMESTAMP_BYTE_LIMIT = 6;
 
 export const ROOT_SNAPSHOT_TOKEN: XOIdentifierToken = [
-  XOTokenType.IDENTIFIER,
+  XO_IDENTIFIER_TOKEN,
   "",
 ];
 
