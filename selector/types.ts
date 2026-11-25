@@ -6,7 +6,6 @@ import type {
 import type { ATTRIBUTE_OPERATORS, COMBINATORS } from "./constants.ts";
 
 export type Combinator = typeof COMBINATORS[number];
-
 export type AttributeOperator = typeof ATTRIBUTE_OPERATORS[number];
 
 /**

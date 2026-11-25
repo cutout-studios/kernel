@@ -1,13 +1,11 @@
-// import type { XODocument } from "@cutout/kernel/document";
-// import type { XOJSX } from "@cutout/kernel/jsx";
+import type { XOJSX } from "@cutout/kernel/jsx";
+import type { Document } from "./types.ts";
 
-// import type { Element } from "./types.ts";
+export const prepend = (
+  target: Document,
+  value: XOJSX,
+): Document => target;
 
-// // TODO: see document/snapshots.append.ts
-// export const append = <T extends XOJSX | XODocument>(
-//   target: T,
-//   value: XOJSX | Element,
-// ): T => {
 //   const appendStack: XOIdentifierToken[] = [ROOT_SNAPSHOT_TOKEN];
 //   const childCounter = _createChildIndexCounter();
 //   childCounter.init(ROOT_SNAPSHOT_TOKEN);
@@ -83,31 +81,6 @@
 //     }
 //   }
 // };
-
-// import type { XOStore } from "@cutout/kernel/document/store";
-// import {
-//   isPrimitiveToken,
-//   tokenizeValue,
-//   XO_TOKEN_TYPE_INDEX,
-//   XO_TOKEN_VALUE_INDEX,
-//   type XOAttributeToken,
-//   type XOElementToken,
-//   type XOIdentifierToken,
-//   type XONumberToken,
-//   type XOOutputToken,
-//   type XOPrimitiveToken,
-//   XOTokenType,
-// } from "@cutout/kernel/jsx/token";
-// import { XOError, XOErrorCode } from "@internal";
-
-// import {
-//   INDEX_ATTRIBUTES_TOKEN,
-//   INDEX_CHILDREN_TOKEN,
-//   INDEX_PARENT_TOKEN,
-//   INDEX_SNAPSHOTS_TOKEN,
-//   INDEX_TAGS_TOKEN,
-//   ROOT_SNAPSHOT_TOKEN,
-// } from "./constants.ts";
 
 // export function appendTag(
 //   store: XOStore,
