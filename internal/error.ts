@@ -114,4 +114,4 @@ export const throwError = (
   options: XOErrorOptions = {},
 ) => {
   throw new XOError(code, options);
-}
+};

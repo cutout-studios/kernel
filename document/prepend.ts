@@ -129,7 +129,8 @@ export const prepend = (
   return document;
 };
 
-const _incrementMapKey = <T>(map: Map<T, number>, key: T) => map.set(key, map.getOrInsert(key, 0) + 1);
+const _incrementMapKey = <T>(map: Map<T, number>, key: T) =>
+  map.set(key, map.getOrInsert(key, 0) + 1);
 
 const _storeElementTag = (
   [add]: XOStore,
