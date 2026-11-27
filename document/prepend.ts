@@ -1,6 +1,7 @@
 import type { XOStore } from "@cutout/kernel/document/store";
 import type { XOJSX } from "@cutout/kernel/jsx";
 import {
+  isPrimitiveToken,
   tokenizeValue,
   XO_ARRAY_TOKEN,
   XO_ATTRIBUTE_TOKEN,
@@ -27,11 +28,10 @@ import {
   type XOPrimitiveToken,
 } from "@cutout/kernel/jsx/token";
 import {
-  DATA_MALFORMED_ERROR_CODE,
-  OPERATION_UNSUPPORTED_ERROR_CODE,
-} from "../internal/constants.ts";
-import { XOError } from "../internal/error.ts"; // TODO: createError
-import { isPrimitiveToken } from "../jsx/token/guards.ts";
+  throwError,
+  XO_DATA_MALFORMED_ERROR_CODE,
+  XO_OPERATION_UNSUPPORTED_ERROR_CODE,
+} from "@internal";
 import {
   INDEX_ATTRIBUTES_TOKEN as ATTRIBUTE_STORE_TOKEN,
   INDEX_CHILDREN_TOKEN as CHILD_STORE_TOKEN,
@@ -48,12 +48,12 @@ export const prepend = (
   value: XOJSX,
 ): Document => {
   const store = document.store[0],
+    createElementID = createIdentifierTokenFactory(),
     ancestryStack = [ROOT_ELEMENT_TOKEN],
-    descendantCounter = new Map(),
-    createElementToken = createIdentifierTokenFactory();
+    descendantCounter = new Map();
 
   let currentParent = ROOT_ELEMENT_TOKEN,
-    currentElement = createElementToken(),
+    currentElement = createElementID(),
     currentAttribute = null;
   for (const token of value[XO_TOKEN_VALUE_INDEX]()) {
     switch (token[XO_TOKEN_TYPE_INDEX]) {
@@ -67,10 +67,8 @@ export const prepend = (
         );
 
         ancestryStack.push(currentElement);
-        descendantCounter.set(
-          currentParent,
-          descendantCounter.get(currentParent) + 1,
-        );
+
+        _incrementMapKey(descendantCounter, currentParent);
 
         currentAttribute = null;
         break;
@@ -81,7 +79,7 @@ export const prepend = (
         break;
       case XO_ELEMENT_CLOSE_TOKEN:
         ancestryStack.pop();
-        currentElement = createElementToken();
+        currentElement = createElementID();
         currentParent = ancestryStack.at(-1)!;
         /* falls through */
       case XO_UNDEFINED_TOKEN:
@@ -107,30 +105,31 @@ export const prepend = (
         }
 
         if (!isPrimitiveToken(token)) {
-          throw new XOError(OPERATION_UNSUPPORTED_ERROR_CODE);
+          throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
         }
 
         _storeElementChild(
           store,
           currentParent,
-          token,
+          token as XOPrimitiveToken,
           descendantCounter.getOrInsert(currentParent, 0),
         );
-        descendantCounter.set(
-          currentParent,
-          descendantCounter.get(currentParent) + 1,
-        );
+
+        _incrementMapKey(descendantCounter, currentParent);
 
         break;
       case XO_PROMISE_TOKEN:
-        throw new XOError(OPERATION_UNSUPPORTED_ERROR_CODE);
+        throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
+        /* falls through */
       case XO_FUNCTION_TOKEN:
-        throw new XOError(DATA_MALFORMED_ERROR_CODE);
+        throwError(XO_DATA_MALFORMED_ERROR_CODE);
     }
   }
 
   return document;
 };
+
+const _incrementMapKey = <T>(map: Map<T, number>, key: T) => map.set(key, map.getOrInsert(key, 0) + 1);
 
 const _storeElementTag = (
   [add]: XOStore,
@@ -149,7 +148,7 @@ const _storeElementAttribute = (
 ) => {
   // ISSUE(#99): Unwrap raw arrays/objects into paths.
   if (!isPrimitiveToken(attributeValue)) {
-    throw new XOError(OPERATION_UNSUPPORTED_ERROR_CODE);
+    throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
   }
 
   add([
@@ -157,7 +156,7 @@ const _storeElementAttribute = (
     elementID,
     ATTRIBUTE_STORE_TOKEN,
     attributeKey,
-    attributeValue,
+    attributeValue as XOPrimitiveToken,
   ]);
 
   // The attribute reverse lookup table require further processing

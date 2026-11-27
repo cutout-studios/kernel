@@ -108,3 +108,10 @@ type XOErrorOptions = {
   context?: unknown;
   guidance?: string;
 } & ErrorOptions;
+
+export const throwError = (
+  code: ErrorCode = OPERATION_UNSUPPORTED_ERROR_CODE,
+  options: XOErrorOptions = {},
+) => {
+  throw new XOError(code, options);
+}

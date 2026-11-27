@@ -1,198 +1,194 @@
+import type { XOStore, XOStorePath } from "@cutout/kernel/document/store";
 import type { XOJSX } from "@cutout/kernel/jsx";
-import type { XOSelector } from "@cutout/kernel/selector";
+import {
+  isPromiseToken,
+  tokenizeValue,
+  XO_ATTRIBUTE_TOKEN,
+  XO_ELEMENT_CLOSE_TOKEN,
+  XO_GENERATOR_TOKEN,
+  XO_IDENTIFIER_TOKEN,
+  type XOAttributeToken,
+  type XOElementToken,
+  type XOIdentifierToken,
+  type XONumberToken,
+  type XOOutputToken,
+} from "@cutout/kernel/jsx/token";
+import type { XOAttributeSelector, XOSelector } from "@cutout/kernel/selector";
+
+import { throwError, XO_OPERATION_UNSUPPORTED_ERROR_CODE } from "@internal";
+
+import {
+  ELEMENT_STORE_LABEL__ATTRIBUTES,
+  ELEMENT_STORE_LABEL__CHILDREN,
+  ELEMENT_STORE_LABEL__TAGS,
+  ELEMENT_STORE_PREFIX,
+  ELEMENT_STORE_PREFIX__ATTRIBUTES,
+  ELEMENT_STORE_PREFIX__TAGS,
+  SELECTION_ATTRIBUTE_KEY_RANK_MAP,
+} from "./constants.ts";
 import type { Document } from "./types.ts";
 
+// NOTE: temp naive implementation
+// ISSUE(#100): properly resolve CSS combinators and attribute comparators
 export const query = (
   document: Document,
-  selector: XOSelector,
-): XOJSX => [];
+  [tag, attributes]: XOSelector,
+): XOJSX => {
+  const { store: [store] } = document, [, list] = store;
 
-// type SelectionFrame = {
-//   isSnapshot: true;
-//   token: XOIdentifierToken;
-// } | {
-//   isSnapshot: false;
-//   token: XOOutputToken;
-// };
+  return [
+    XO_GENERATOR_TOKEN,
+    function* () {
+      let results;
 
-// export function selectJSX(
-//   store: XOStore,
-//   snapshot: XOIdentifierToken,
-// ): XOJSXToken {
-//   return [
-//     XOTokenType.GENERATOR,
-//     function* () {
-//       let selectionStack: SelectionFrame[] = [
-//         { token: snapshot, isSnapshot: true },
-//       ];
-//       while (selectionStack.length) {
-//         const frame = selectionStack.pop()!;
+      // TODO: repeated logic across attributes, tags
+      if (attributes) {
+        for (
+          const [value, key] of [...attributes].sort(
+            _attributeSpecificityHeuristic,
+          )
+        ) {
+          const attributeSet = new Set<string>();
+          const prefix = value ? [key, value] : [key];
+          for (
+            const path of list([ELEMENT_STORE_PREFIX__ATTRIBUTES, ...prefix]) ??
+              []
+          ) {
+            if (isPromiseToken(path)) {
+              throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
+            }
 
-//         if (!frame.isSnapshot) {
-//           yield frame.token;
-//           continue;
-//         }
+            const [, snapshotId] = path.at(-1) as XOIdentifierToken;
 
-//         const snapshotPathGenerator = store.list([
-//           INDEX_SNAPSHOTS_TOKEN,
-//           frame.token,
-//         ]);
+            attributeSet.add(snapshotId);
+          }
 
-//         if (!snapshotPathGenerator) continue;
+          results = results ? _intersect(results, attributeSet) : attributeSet;
+        }
+      }
 
-//         let tagValue: string | undefined;
-//         const attributes: (XOAttributeToken | XOPrimitiveToken)[] = [];
-//         const orderedChildren: SelectionFrame[] = [];
-//         for (const path of snapshotPathGenerator) {
-//           if (isPromiseToken(path)) {
-//             throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//           }
+      if (tag) {
+        const tagSet = new Set<string>();
+        for (
+          const path of list([ELEMENT_STORE_PREFIX__TAGS, tag]) ?? []
+        ) {
+          if (isPromiseToken(path)) {
+            throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
+          }
 
-//           const [indexNameToken, keyToken, valueToken] = path as XOStorePath;
+          const [, snapshotId] = path.at(-1) as XOIdentifierToken;
 
-//           switch (indexNameToken[XO_TOKEN_VALUE_INDEX]) {
-//             case INDEX_TAGS_LABEL: {
-//               yield keyToken as XOElementToken;
-//               [, tagValue] = keyToken as XOElementToken;
-//               break;
-//             }
-//             case INDEX_ATTRIBUTES_LABEL:
-//               attributes.push(
-//                 keyToken as XOAttributeToken,
-//                 valueToken as XOPrimitiveToken,
-//               );
-//               break;
-//             case XO_CHILDREN_LABEL: {
-//               const [, childIndex] = keyToken as XONumberToken;
-//               const [childType] = valueToken;
+          tagSet.add(snapshotId);
+        }
+        results = results ? _intersect(results, tagSet) : tagSet;
+      }
 
-//               orderedChildren[childIndex] = childType === XOTokenType.IDENTIFIER
-//                 ? {
-//                   isSnapshot: true,
-//                   token: valueToken as XOIdentifierToken,
-//                 }
-//                 : {
-//                   isSnapshot: false,
-//                   token: valueToken as XOPrimitiveToken,
-//                 };
-//             }
-//           }
-//         }
+      for (const result of results) {
+        yield* _retrieveElement(store, [XO_IDENTIFIER_TOKEN, result]);
+      }
+    },
+  ];
+};
 
-//         yield* attributes;
+const _retrieveElement = ([, list]: XOStore, elementID: XOIdentifierToken) => [
+  XO_GENERATOR_TOKEN,
+  function* () {
+    let stack: [XOIdentifierToken | XOOutputToken, boolean][] = [[
+      elementID,
+      true,
+    ]];
 
-//         if (orderedChildren.length) {
-//           yield [XOTokenType.ATTRIBUTE, XO_CHILDREN_LABEL];
-//         }
+    while (stack.length) {
+      const [currentToken, isElementID] = stack.pop()!;
 
-//         selectionStack = [...selectionStack, {
-//           isSnapshot: false,
-//           token: [XOTokenType.ELEMENT_CLOSE, tagValue!],
-//         }, ...(orderedChildren.reverse())];
-//       }
-//     },
-//   ];
-// }
+      if (!isElementID) {
+        yield currentToken;
+        continue;
+      }
 
-// export function selectTokens(
-//   store: XOStore,
-//   { attributes, tag }: XOSelector,
-// ): XOIdentifierToken[] {
-//   let result;
+      const listResults = list([ELEMENT_STORE_PREFIX, currentToken]);
 
-//   if (attributes) {
-//     for (
-//       const { value, key } of [...attributes].sort(
-//         _attributeSpecificityHeuristic,
-//       )
-//     ) {
-//       const attributeSet = new Set<string>();
-//       const prefix = value ? [key, value] : [key];
-//       for (
-//         const path of store.list([INDEX_ATTRIBUTES_TOKEN, ...prefix]) ??
-//           []
-//       ) {
-//         if (isPromiseToken(path)) {
-//           throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//         }
+      if (!listResults) continue;
 
-//         const [, snapshotId] = path.at(-1) as XOIdentifierToken;
+      const elementAttributes: XOOutputToken[] = [], elementChildren = [];
 
-//         attributeSet.add(snapshotId);
-//       }
+      let currentElementTag: string;
+      for (const listResult of listResults) {
+        if (isPromiseToken(listResult)) {
+          throwError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
+        }
 
-//       result = result ? _intersect(result, attributeSet) : attributeSet;
-//     }
-//   }
+        const [[, resultType], keyToken, valueToken] =
+          listResult as XOStorePath;
 
-//   if (tag) {
-//     const tagSet = new Set<string>();
-//     for (
-//       const path of store.list([INDEX_TAGS_TOKEN, tag]) ?? []
-//     ) {
-//       if (isPromiseToken(path)) {
-//         throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//       }
+        switch (resultType) {
+          case ELEMENT_STORE_LABEL__TAGS: {
+            yield keyToken as XOElementToken;
+            [, currentElementTag] = keyToken as XOElementToken;
+            break;
+          }
+          case ELEMENT_STORE_LABEL__ATTRIBUTES:
+            elementAttributes.push(
+              keyToken as XOAttributeToken,
+              valueToken as XOOutputToken,
+            );
+            break;
+          case ELEMENT_STORE_LABEL__CHILDREN: {
+            const [, childPosition] = keyToken as XONumberToken,
+              [childType] = valueToken;
+            elementChildren[childPosition] = [
+              valueToken,
+              childType === XO_IDENTIFIER_TOKEN,
+            ];
+            break;
+          }
+        }
+      }
 
-//       const [, snapshotId] = path.at(-1) as XOIdentifierToken;
+      yield* elementAttributes;
 
-//       tagSet.add(snapshotId);
-//     }
-//     result = result ? _intersect(result, tagSet) : tagSet;
-//   }
+      if (elementChildren.length) {
+        yield [XO_ATTRIBUTE_TOKEN, ELEMENT_STORE_LABEL__CHILDREN];
+      }
 
-//   return Array.from(result ?? new Set<string>()).map(
-//     (id) => [XOTokenType.IDENTIFIER, id],
-//   );
-// }
+      stack = [...stack, [[
+        XO_ELEMENT_CLOSE_TOKEN,
+        tagValue!,
+      ]], ...(elementChildren.reverse())];
+    }
+  },
+];
 
-// function _intersect<T>(left: Set<T>, right: Set<T>): Set<T> {
-//   const result = new Set<T>();
+const _intersect = <T>(left: Set<T>, right: Set<T>): Set<T> => {
+  const result = new Set<T>();
 
-//   const [smallerSet, largerSet] = left.size < right.size
-//     ? [left, right]
-//     : [right, left];
-//   for (const item of smallerSet) {
-//     if (largerSet.has(item)) {
-//       result.add(item);
-//     }
-//   }
+  const [smallerSet, largerSet] = left.size < right.size
+    ? [left, right]
+    : [right, left];
+  for (const item of smallerSet) {
+    if (largerSet.has(item)) {
+      result.add(item);
+    }
+  }
 
-//   return result;
-// }
+  return result;
+};
 
-// function _attributeSpecificityHeuristic(
-//   {
-//     key: [, leftKeyValue],
-//     value: [, leftValue] = tokenizeValue(""),
-//   }: XOAttributeSelector,
-//   {
-//     key: [, rightKeyValue],
-//     value: [, rightValue] = tokenizeValue(""),
-//   }: XOAttributeSelector,
-// ): number {
-//   const rankDifference =
-//     (SELECTION_ATTRIBUTE_KEY_RANK_MAP[rightKeyValue] ?? 0) -
-//     (SELECTION_ATTRIBUTE_KEY_RANK_MAP[leftKeyValue] ?? 0);
-//   if (rankDifference) return rankDifference;
+const _attributeSpecificityHeuristic = (
+  [
+    [, leftKeyValue],
+    [, leftValue] = tokenizeValue(""),
+  ]: XOAttributeSelector,
+  [
+    [, rightKeyValue],
+    [, rightValue] = tokenizeValue(""),
+  ]: XOAttributeSelector,
+): number => {
+  const rankDifference =
+    (SELECTION_ATTRIBUTE_KEY_RANK_MAP[rightKeyValue] ?? 0) -
+    (SELECTION_ATTRIBUTE_KEY_RANK_MAP[leftKeyValue] ?? 0);
+  if (rankDifference) return rankDifference;
 
-//   return (rightValue.length || rightKeyValue.length) -
-//     (leftValue.length || leftKeyValue.length);
-// }
-
-// };
-
-// // ISSUE(#100): properly resolve CSS combinators and attribute comparators
-// function _checkSelectorSupport(selectors: XOSelector[]) {
-//   for (const { attributes, combinator, child } of selectors) {
-//     if (combinator || child) {
-//       throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//     }
-
-//     for (const { operator, caseSensitive } of attributes) {
-//       if (operator || caseSensitive !== undefined) {
-//         throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//       }
-//     }
-//   }
-// }
+  return (rightValue.length || rightKeyValue.length) -
+    (leftValue.length || leftKeyValue.length);
+};
