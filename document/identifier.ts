@@ -12,7 +12,7 @@ import {
   TIMESTAMP_BYTE_LIMIT,
 } from "./constants.ts";
 
-export function getIdentifierTokenFactory(
+export function createIdentifierTokenFactory(
   {
     totalByteLength = DEFAULT_IDENTIFIER_BYTE_LENGTH,
   } = {},

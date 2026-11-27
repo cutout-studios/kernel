@@ -3,7 +3,7 @@ import type { XOSelector } from "@cutout/kernel/selector";
 import type { Document } from "./types.ts";
 
 export const query = (
-  source: Document,
+  document: Document,
   selector: XOSelector,
 ): XOJSX => [];
 

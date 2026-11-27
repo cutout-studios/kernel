@@ -1,7 +1,7 @@
 import type { XOStore } from "@cutout/kernel/document/store";
 import type { XOJSX } from "@cutout/kernel/jsx";
 import {
-tokenizeValue,
+  tokenizeValue,
   XO_ARRAY_TOKEN,
   XO_ATTRIBUTE_TOKEN,
   XO_BOOLEAN_TOKEN,
@@ -33,32 +33,44 @@ import {
 import { XOError } from "../internal/error.ts"; // TODO: createError
 import { isPrimitiveToken } from "../jsx/token/guards.ts";
 import {
-  INDEX_CHILDREN_TOKEN as CHILD_INDEX_TOKEN,
-  INDEX_PARENT_TOKEN as PARENT_INDEX_TOKEN,
-  INDEX_SNAPSHOTS_TOKEN as ELEMENT_INDEX_TOKEN,
-  INDEX_TAGS_TOKEN as ELEMENT_TAG_INDEX_TOKEN,
+  INDEX_ATTRIBUTES_TOKEN as ATTRIBUTE_STORE_TOKEN,
+  INDEX_CHILDREN_TOKEN as CHILD_STORE_TOKEN,
+  INDEX_PARENT_TOKEN as PARENT_STORE_TOKEN,
+  INDEX_SNAPSHOTS_TOKEN as ELEMENT_STORE_TOKEN,
+  INDEX_TAGS_TOKEN as ELEMENT_TAG_STORE_TOKEN,
   ROOT_SNAPSHOT_TOKEN as ROOT_ELEMENT_TOKEN,
-  INDEX_ATTRIBUTES_TOKEN as ATTRIBUTE_INDEX_TOKEN,
 } from "./constants.ts";
+import { createIdentifierTokenFactory } from "./identifier.ts";
 import type { Document } from "./types.ts";
 
 export const prepend = (
-  { store: [store] }: Document,
+  document: Document,
   value: XOJSX,
 ): Document => {
-  const ancestryStack = [ROOT_ELEMENT_TOKEN], descendantCounter = _createDescendantCounter(); // ? TODO
+  const store = document.store[0],
+    ancestryStack = [ROOT_ELEMENT_TOKEN],
+    descendantCounter = new Map(),
+    createElementToken = createIdentifierTokenFactory();
 
   let currentParent = ROOT_ELEMENT_TOKEN,
-    currentElement = _createElementID(),
+    currentElement = createElementToken(),
     currentAttribute = null;
   for (const token of value[XO_TOKEN_VALUE_INDEX]()) {
     switch (token[XO_TOKEN_TYPE_INDEX]) {
       case XO_ELEMENT_OPEN_TOKEN: {
         _storeElementTag(store, currentElement, token);
-        _storeElementChild(store, currentParent, currentElement, descendantCounter(currentParent));
+        _storeElementChild(
+          store,
+          currentParent,
+          currentElement,
+          descendantCounter.getOrInsert(currentParent, 0),
+        );
 
         ancestryStack.push(currentElement);
-        // descendantCounter(currentParent)++;
+        descendantCounter.set(
+          currentParent,
+          descendantCounter.get(currentParent) + 1,
+        );
 
         currentAttribute = null;
         break;
@@ -69,8 +81,8 @@ export const prepend = (
         break;
       case XO_ELEMENT_CLOSE_TOKEN:
         ancestryStack.pop();
-        currentElement = _createElementID();
-        currentParent = ancestryStack.at(-1);
+        currentElement = createElementToken();
+        currentParent = ancestryStack.at(-1)!;
         /* falls through */
       case XO_UNDEFINED_TOKEN:
         currentAttribute = null;
@@ -98,8 +110,16 @@ export const prepend = (
           throw new XOError(OPERATION_UNSUPPORTED_ERROR_CODE);
         }
 
-        _storeElementChild(store, currentParent, token, descendantCounter(currentParent));
-        // descendantCounter(currentParent)++;
+        _storeElementChild(
+          store,
+          currentParent,
+          token,
+          descendantCounter.getOrInsert(currentParent, 0),
+        );
+        descendantCounter.set(
+          currentParent,
+          descendantCounter.get(currentParent) + 1,
+        );
 
         break;
       case XO_PROMISE_TOKEN:
@@ -109,20 +129,16 @@ export const prepend = (
     }
   }
 
-  return target;
+  return document;
 };
-
-// TODO: where were these?
-const _createElementID = () => {};
-const _createDescendantCounter = () => {};
 
 const _storeElementTag = (
   [add]: XOStore,
   elementID: XOIdentifierToken,
   elementTag: XOElementToken,
 ) => {
-  add([ELEMENT_INDEX_TOKEN, elementID, ELEMENT_TAG_INDEX_TOKEN, elementTag]);
-  add([ELEMENT_TAG_INDEX_TOKEN, elementTag, elementID]);
+  add([ELEMENT_STORE_TOKEN, elementID, ELEMENT_TAG_STORE_TOKEN, elementTag]);
+  add([ELEMENT_TAG_STORE_TOKEN, elementTag, elementID]);
 };
 
 const _storeElementAttribute = (
@@ -137,11 +153,11 @@ const _storeElementAttribute = (
   }
 
   add([
-    ELEMENT_INDEX_TOKEN,
+    ELEMENT_STORE_TOKEN,
     elementID,
-    ATTRIBUTE_INDEX_TOKEN,
+    ATTRIBUTE_STORE_TOKEN,
     attributeKey,
-    attributeValue
+    attributeValue,
   ]);
 
   // The attribute reverse lookup table require further processing
@@ -161,7 +177,7 @@ const _storeElementAttribute = (
 
   for (const string of reverseLookupStrings) {
     add([
-      ATTRIBUTE_INDEX_TOKEN,
+      ATTRIBUTE_STORE_TOKEN,
       attributeKey,
       tokenizeValue(string),
       elementID,
@@ -177,97 +193,19 @@ const _storeElementChild = (
 ) => {
   if (child[XO_TOKEN_TYPE_INDEX] === XO_IDENTIFIER_TOKEN) {
     add([
-      ELEMENT_INDEX_TOKEN,
+      ELEMENT_STORE_TOKEN,
       child,
-      PARENT_INDEX_TOKEN,
+      PARENT_STORE_TOKEN,
       elementID,
       position,
     ]);
   }
 
   add([
-    ELEMENT_INDEX_TOKEN,
+    ELEMENT_STORE_TOKEN,
     elementID,
-    CHILD_INDEX_TOKEN,
+    CHILD_STORE_TOKEN,
     position,
     child,
   ]);
 };
-
-// ...previous...
-
-//   const appendStack: XOIdentifierToken[] = [ROOT_SNAPSHOT_TOKEN];
-//   const childCounter = _createChildIndexCounter();
-//   childCounter.init(ROOT_SNAPSHOT_TOKEN);
-
-//   let attributePointer: XOAttributeToken | null = null;
-//   for (const token of jsxGenerator[XO_TOKEN_VALUE_INDEX]()) {
-//     const parent = appendStack.at(-1) ?? ROOT_SNAPSHOT_TOKEN;
-//     const childCount = childCounter.get(parent);
-
-//     switch (token[XO_TOKEN_TYPE_INDEX]) {
-//       case XOTokenType.ELEMENT_OPEN: {
-//         const snapshot = getSnapshotToken();
-
-//         appendTag(store, { snapshot, tag: token });
-//         appendChild(store, {
-//           snapshot: parent,
-//           child: { token: snapshot, index: childCount },
-//         });
-
-//         childCounter.init(snapshot);
-//         appendStack.push(snapshot);
-
-//         childCounter.increment(parent);
-
-//         attributePointer = null;
-//         break;
-//       }
-//       case XOTokenType.ATTRIBUTE:
-//         if (token[XO_TOKEN_VALUE_INDEX] !== XO_CHILDREN_LABEL) {
-//           attributePointer = token;
-//         }
-//         break;
-//       case XOTokenType.ELEMENT_CLOSE:
-//         appendStack.pop();
-//         /* falls through */
-//       case XOTokenType.UNDEFINED:
-//         attributePointer = null;
-//         break;
-//       case XOTokenType.BOOLEAN:
-//       case XOTokenType.STRING:
-//       case XOTokenType.NUMBER:
-//       case XOTokenType.SYMBOL:
-//       case XOTokenType.ARRAY:
-//       case XOTokenType.OBJECT:
-//       case XOTokenType.NULL:
-//         if (attributePointer) {
-//           appendAttribute(
-//             store,
-//             {
-//               snapshot: parent,
-//               attribute: { key: attributePointer, value: token },
-//             },
-//           );
-
-//           attributePointer = null;
-//           break;
-//         }
-
-//         if (!isPrimitiveToken(token)) {
-//           throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//         }
-
-//         appendChild(store, {
-//           snapshot: parent,
-//           child: { token, index: childCount },
-//         });
-//         childCounter.increment(parent);
-//         break;
-//       case XOTokenType.PROMISE:
-//         throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
-//       case XOTokenType.FUNCTION:
-//         throw new XOError(XOErrorCode.DATA_MALFORMED);
-//     }
-//   }
-// };
