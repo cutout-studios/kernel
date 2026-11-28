@@ -14,7 +14,7 @@ export const BIN_TO_BYTES = 8;
 export const BYTE_DEPTH = BIN_DEPTH ** BIN_TO_BYTES;
 export const TIMESTAMP_BYTE_LIMIT = 6;
 
-export const ROOT_SNAPSHOT_TOKEN: XOIdentifierToken = [
+export const ROOT_ELEMENT_TOKEN: XOIdentifierToken = [
   XO_IDENTIFIER_TOKEN,
   "",
 ];

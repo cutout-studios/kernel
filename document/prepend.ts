@@ -33,12 +33,12 @@ import {
   XO_OPERATION_UNSUPPORTED_ERROR_CODE,
 } from "@internal";
 import {
-  INDEX_ATTRIBUTES_TOKEN as ATTRIBUTE_STORE_TOKEN,
-  INDEX_CHILDREN_TOKEN as CHILD_STORE_TOKEN,
-  INDEX_PARENT_TOKEN as PARENT_STORE_TOKEN,
-  INDEX_SNAPSHOTS_TOKEN as ELEMENT_STORE_TOKEN,
-  INDEX_TAGS_TOKEN as ELEMENT_TAG_STORE_TOKEN,
-  ROOT_SNAPSHOT_TOKEN as ROOT_ELEMENT_TOKEN,
+  ELEMENT_STORE_PREFIX__ATTRIBUTES,
+  ELEMENT_STORE_PREFIX__CHILDREN,
+  ELEMENT_STORE_PREFIX__PARENT,
+  ELEMENT_STORE_PREFIX,
+  ELEMENT_STORE_PREFIX__TAGS,
+  ROOT_ELEMENT_TOKEN,
 } from "./constants.ts";
 import { createIdentifierTokenFactory } from "./identifier.ts";
 import type { Document } from "./types.ts";
@@ -137,8 +137,8 @@ const _storeElementTag = (
   elementID: XOIdentifierToken,
   elementTag: XOElementToken,
 ) => {
-  add([ELEMENT_STORE_TOKEN, elementID, ELEMENT_TAG_STORE_TOKEN, elementTag]);
-  add([ELEMENT_TAG_STORE_TOKEN, elementTag, elementID]);
+  add([ELEMENT_STORE_PREFIX, elementID, ELEMENT_STORE_PREFIX__TAGS, elementTag]);
+  add([ELEMENT_STORE_PREFIX__TAGS, elementTag, elementID]);
 };
 
 const _storeElementAttribute = (
@@ -153,9 +153,9 @@ const _storeElementAttribute = (
   }
 
   add([
-    ELEMENT_STORE_TOKEN,
+    ELEMENT_STORE_PREFIX,
     elementID,
-    ATTRIBUTE_STORE_TOKEN,
+    ELEMENT_STORE_PREFIX__ATTRIBUTES,
     attributeKey,
     attributeValue as XOPrimitiveToken,
   ]);
@@ -177,7 +177,7 @@ const _storeElementAttribute = (
 
   for (const string of reverseLookupStrings) {
     add([
-      ATTRIBUTE_STORE_TOKEN,
+      ELEMENT_STORE_PREFIX__ATTRIBUTES,
       attributeKey,
       tokenizeValue(string),
       elementID,
@@ -193,18 +193,18 @@ const _storeElementChild = (
 ) => {
   if (child[XO_TOKEN_TYPE_INDEX] === XO_IDENTIFIER_TOKEN) {
     add([
-      ELEMENT_STORE_TOKEN,
+      ELEMENT_STORE_PREFIX,
       child,
-      PARENT_STORE_TOKEN,
+      ELEMENT_STORE_PREFIX__PARENT,
       elementID,
       position,
     ]);
   }
 
   add([
-    ELEMENT_STORE_TOKEN,
+    ELEMENT_STORE_PREFIX,
     elementID,
-    CHILD_STORE_TOKEN,
+    ELEMENT_STORE_PREFIX__CHILDREN,
     position,
     child,
   ]);

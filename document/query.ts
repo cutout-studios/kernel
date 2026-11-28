@@ -7,7 +7,9 @@ import {
   XO_ELEMENT_CLOSE_TOKEN,
   XO_GENERATOR_TOKEN,
   XO_IDENTIFIER_TOKEN,
+  XO_TOKEN_VALUE_INDEX,
   type XOAttributeToken,
+  type XOElementCloseToken,
   type XOElementToken,
   type XOIdentifierToken,
   type XONumberToken,
@@ -41,10 +43,9 @@ export const query = (
     function* () {
       let results;
 
-      // TODO: repeated logic across attributes, tags
       if (attributes) {
         for (
-          const [value, key] of [...attributes].sort(
+          const [key, value] of [...attributes].sort(
             _attributeSpecificityHeuristic,
           )
         ) {
@@ -83,14 +84,18 @@ export const query = (
         results = results ? _intersect(results, tagSet) : tagSet;
       }
 
-      for (const result of results) {
-        yield* _retrieveElement(store, [XO_IDENTIFIER_TOKEN, result]);
+      for (const result of results ?? []) {
+        yield* _retrieveElement(store, [XO_IDENTIFIER_TOKEN, result])
+          [XO_TOKEN_VALUE_INDEX]();
       }
     },
   ];
 };
 
-const _retrieveElement = ([, list]: XOStore, elementID: XOIdentifierToken) => [
+const _retrieveElement = (
+  [, list]: XOStore,
+  elementID: XOIdentifierToken,
+): XOJSX => [
   XO_GENERATOR_TOKEN,
   function* () {
     let stack: [XOIdentifierToken | XOOutputToken, boolean][] = [[
@@ -102,15 +107,19 @@ const _retrieveElement = ([, list]: XOStore, elementID: XOIdentifierToken) => [
       const [currentToken, isElementID] = stack.pop()!;
 
       if (!isElementID) {
-        yield currentToken;
+        yield currentToken as XOOutputToken;
         continue;
       }
 
-      const listResults = list([ELEMENT_STORE_PREFIX, currentToken]);
+      const listResults = list([
+        ELEMENT_STORE_PREFIX,
+        currentToken as XOIdentifierToken,
+      ]);
 
       if (!listResults) continue;
 
-      const elementAttributes: XOOutputToken[] = [], elementChildren = [];
+      const elementAttributes: XOOutputToken[] = [],
+        elementChildren: [XOOutputToken, boolean][] = [];
 
       let currentElementTag: string;
       for (const listResult of listResults) {
@@ -137,7 +146,7 @@ const _retrieveElement = ([, list]: XOStore, elementID: XOIdentifierToken) => [
             const [, childPosition] = keyToken as XONumberToken,
               [childType] = valueToken;
             elementChildren[childPosition] = [
-              valueToken,
+              valueToken as XOOutputToken,
               childType === XO_IDENTIFIER_TOKEN,
             ];
             break;
@@ -148,31 +157,23 @@ const _retrieveElement = ([, list]: XOStore, elementID: XOIdentifierToken) => [
       yield* elementAttributes;
 
       if (elementChildren.length) {
-        yield [XO_ATTRIBUTE_TOKEN, ELEMENT_STORE_LABEL__CHILDREN];
+        yield [
+          XO_ATTRIBUTE_TOKEN,
+          ELEMENT_STORE_LABEL__CHILDREN,
+        ] as XOAttributeToken;
       }
 
-      stack = [...stack, [[
-        XO_ELEMENT_CLOSE_TOKEN,
-        tagValue!,
-      ]], ...(elementChildren.reverse())];
+      stack = [
+        ...stack,
+        [[
+          XO_ELEMENT_CLOSE_TOKEN,
+          currentElementTag!,
+        ], false] as [XOElementCloseToken, boolean],
+        ...(elementChildren.reverse()),
+      ];
     }
   },
 ];
-
-const _intersect = <T>(left: Set<T>, right: Set<T>): Set<T> => {
-  const result = new Set<T>();
-
-  const [smallerSet, largerSet] = left.size < right.size
-    ? [left, right]
-    : [right, left];
-  for (const item of smallerSet) {
-    if (largerSet.has(item)) {
-      result.add(item);
-    }
-  }
-
-  return result;
-};
 
 const _attributeSpecificityHeuristic = (
   [
@@ -191,4 +192,17 @@ const _attributeSpecificityHeuristic = (
 
   return (rightValue.length || rightKeyValue.length) -
     (leftValue.length || leftKeyValue.length);
+};
+
+const _intersect = <T>(left: Set<T>, right: Set<T>): Set<T> => {
+  const result = new Set<T>();
+
+  const [smallerSet, largerSet] = left.size < right.size
+    ? [left, right]
+    : [right, left];
+  for (const item of smallerSet) {
+    if (largerSet.has(item)) result.add(item);
+  }
+
+  return result;
 };
