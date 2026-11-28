@@ -6,23 +6,28 @@
  * intermediate representation (IR).
  */
 
+import type { XOElement } from "@cutout/kernel/element";
 import {
   isJSXToken,
   isOutputToken,
   isValidToken,
   tokenizeValue,
   type UnknownToken,
+  XO_ATTRIBUTE_TOKEN,
   XO_CHILDREN_LABEL,
+  XO_ELEMENT_CLOSE_TOKEN,
+  XO_ELEMENT_OPEN_TOKEN,
   XO_FRAGMENT_LABEL,
+  XO_GENERATOR_TOKEN,
   XO_TOKEN_TYPE_INDEX,
   XO_TOKEN_VALUE_INDEX,
+  XO_UNKNOWN_TOKEN,
   XO_UNSERIALIZABLE_LABEL,
   type XOAttributeToken,
   type XOElementCloseToken,
   type XOElementToken,
   type XOJSXToken,
   type XOOutputToken,
-  XOTokenType,
 } from "@cutout/kernel/jsx/token";
 
 /**
@@ -43,22 +48,7 @@ export namespace JSX {
   }
 }
 
-/**
- * Custom elements. Define an element function and TypeScript will infer its attributes.
- *
- * @example
- * ```tsx
- * const MyElement = defineElement<{ hello: string; }>(
- *   attributes => <div>{attributes.hello}</div>
- * );
- *
- * const correct = <MyElement hello="123" /> // Works!
- * const incorrect = <MyElement hello={123} /> // Type Error.
- * ```
- */
-export type XOElementFunction<A = Record<string, unknown>> = (
-  attributes: A,
-) => XOJSXToken;
+export type XOJSX = XOJSXToken;
 
 /**
  * The core transformation function for `@cutout/kernel`.
@@ -76,10 +66,10 @@ export type XOElementFunction<A = Record<string, unknown>> = (
  * @returns A generator token representing the element structure.
  */
 export const jsx = (
-  element: XOElementFunction | string,
+  element: XOElement | string,
   _elementAttributes: { [key: string]: unknown },
   ..._elementChildren: unknown[]
-): XOJSXToken => {
+): XOJSX => {
   const _generator = function* () {
     // 1. Normalize children across "react" and "react-jsx" pragma types.
     //    We separate children from the rest of the attributes to handle them separately.
@@ -101,18 +91,18 @@ export const jsx = (
 
     // 3. Otherwise, we've hit an intrinsic element.
     // => 3.1. Yield the opening tag.
-    yield [XOTokenType.ELEMENT_OPEN, element] as XOElementToken;
+    yield [XO_ELEMENT_OPEN_TOKEN, element] as XOElementToken;
 
     // => 3.2. Yield all non-child attributes.
     for (const key in attributes) {
-      yield [XOTokenType.ATTRIBUTE, key] as XOAttributeToken;
+      yield [XO_ATTRIBUTE_TOKEN, key] as XOAttributeToken;
       yield* _forwardTokens(attributes[key]);
     }
 
     // => 3.3. Yield children.
     if (Array.isArray(children) && children.length) {
       yield [
-        XOTokenType.ATTRIBUTE,
+        XO_ATTRIBUTE_TOKEN,
         XO_CHILDREN_LABEL,
       ] as XOAttributeToken;
 
@@ -121,12 +111,12 @@ export const jsx = (
 
     // => 3.4. Yield the closing tag.
     yield [
-      XOTokenType.ELEMENT_CLOSE,
+      XO_ELEMENT_CLOSE_TOKEN,
       element,
     ] as XOElementCloseToken;
   };
 
-  return [XOTokenType.GENERATOR, _generator];
+  return [XO_GENERATOR_TOKEN, _generator];
 };
 
 /**
@@ -164,12 +154,12 @@ function* _forwardTokens(
 
   const token = tokenizeValue(value) as XOOutputToken | UnknownToken;
 
-  if (token[XO_TOKEN_TYPE_INDEX] !== XOTokenType.UNKNOWN) {
+  if (token[XO_TOKEN_TYPE_INDEX] !== XO_UNKNOWN_TOKEN) {
     yield token;
   }
 
   // ISSUE(#47): implement jsxDEV to exercise the `debug` option.
-  if (token[XO_TOKEN_TYPE_INDEX] === XOTokenType.UNKNOWN && debug) {
+  if (token[XO_TOKEN_TYPE_INDEX] === XO_UNKNOWN_TOKEN && debug) {
     let unknownValue;
 
     try {

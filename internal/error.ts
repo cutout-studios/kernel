@@ -5,10 +5,10 @@ import {
   ERROR_CONTEXT_MISSING_MESSAGE,
   ERROR_CONTEXT_TRUNCATION_CHARACTER,
   ERROR_GUIDANCE_MISSING_MESSAGE,
-  ErrorCode,
+  OPERATION_UNSUPPORTED_ERROR_CODE,
   PROJECT_ROOT,
 } from "./constants.ts";
-import type { CallSite } from "./types.ts";
+import type { CallSite, ErrorCode } from "./types.ts";
 
 /** @internal */
 export type XOErrorCallsite = {
@@ -30,14 +30,14 @@ export class XOError extends Error {
    *
    * @example
    * ```ts
-   * throw new XOError(XOErrorCode.DATA_ACCESS, {
+   * throw new XOError(XO_DATA_ACCESS_ERROR_CODE, {
    *   context: User,
    *   guidance: "The user may not be logged in yet due to a race condition. See Issue #35."
    * });
    * ```
    */
   constructor(
-    code: ErrorCode = ErrorCode.OPERATION_UNSUPPORTED,
+    code: ErrorCode = OPERATION_UNSUPPORTED_ERROR_CODE,
     { guidance, context, ...options }: XOErrorOptions = {},
   ) {
     super(`[${code}] ${ERROR_CODE_MESSAGES[code]}`, options);
@@ -108,3 +108,10 @@ type XOErrorOptions = {
   context?: unknown;
   guidance?: string;
 } & ErrorOptions;
+
+export const throwError = (
+  code: ErrorCode = OPERATION_UNSUPPORTED_ERROR_CODE,
+  options: XOErrorOptions = {},
+) => {
+  throw new XOError(code, options);
+};

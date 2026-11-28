@@ -1,22 +1,29 @@
-/**
- * The means by which selector grammar is combined.
- */
-export enum Combinator {
-  LIST = ",",
-  CHILD = ">",
-  NEXT = "+",
-  SUBSEQUENT = "~",
-  COLUMN = "||",
-  DESCENDANT = " ",
-}
+export const LIST_COMBINATOR = ",";
+export const CHILD_COMBINATOR = ">";
+export const NEXT_COMBINATOR = "+";
+export const SUBSEQUENT_COMBINATOR = "~";
+export const COLUMN_COMBINATOR = "||";
+export const DESCENDANT_COMBINATOR = " ";
 
-/**
- * The method by which a given attribute is matched.
- */
-export enum AttributeOperator {
-  EQUALS = "=",
-  IN_LIST = "~=",
-  IN_TEXT = "*=",
-  STARTS_WITH = "^=",
-  ENDS_WITH = "$=",
-}
+export const COMBINATORS = [
+  LIST_COMBINATOR,
+  CHILD_COMBINATOR,
+  NEXT_COMBINATOR,
+  SUBSEQUENT_COMBINATOR,
+  COLUMN_COMBINATOR,
+  DESCENDANT_COMBINATOR,
+] as const;
+
+export const ATTRIBUTE_EQUALS = "=";
+export const ATTRIBUTE_IN_LIST = "~=";
+export const ATTRIBUTE_IN_TEXT = "*=";
+export const ATTRIBUTE_STARTS_WITH = "^=";
+export const ATTRIBUTE_ENDS_WITH = "$=";
+
+export const ATTRIBUTE_OPERATORS = [
+  ATTRIBUTE_EQUALS,
+  ATTRIBUTE_IN_LIST,
+  ATTRIBUTE_IN_TEXT,
+  ATTRIBUTE_STARTS_WITH,
+  ATTRIBUTE_ENDS_WITH,
+] as const;

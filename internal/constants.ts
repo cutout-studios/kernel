@@ -5,29 +5,34 @@ export const PROJECT_ROOT = readEnv("PROJECT_ROOT", Deno.cwd());
 export const CALLSITE_INDEX = 0;
 export const CALLSITE_PARENT_INDEX = 1;
 
-/**
- * Canonical XOError error codes.
- */
-export enum ErrorCode {
-  DATA_MISSING = "DATA_MISSING",
-  DATA_MALFORMED = "DATA_MALFORMED",
-  DATA_ACCESS = "DATA_ACCESS",
-  OPERATION_UNSUPPORTED = "OPERATION_UNSUPPORTED",
-  OPERATION_INSECURE = "OPERATION_INSECURE",
-  OPERATION_FAILURE = "OPERATION_FAILURE",
-  OPERATION_REDUNDANT = "OPERATION_REDUNDANT",
-}
+export const DATA_MISSING_ERROR_CODE = "DATA_MISSING";
+export const DATA_MALFORMED_ERROR_CODE = "DATA_MALFORMED";
+export const DATA_ACCESS_ERROR_CODE = "DATA_ACCESS";
+export const OPERATION_UNSUPPORTED_ERROR_CODE = "OPERATION_UNSUPPORTED";
+export const OPERATION_INSECURE_ERROR_CODE = "OPERATION_INSECURE";
+export const OPERATION_FAILURE_ERROR_CODE = "OPERATION_FAILURE";
+export const OPERATION_REDUNDANT_ERROR_CODE = "OPERATION_REDUNDANT";
 
-export const ERROR_CODE_MESSAGES = {
-  [ErrorCode.DATA_MISSING]: "Failed due to missing data.",
-  [ErrorCode.DATA_MALFORMED]: "Failed due to improperly formatted data.",
-  [ErrorCode.DATA_ACCESS]: "Cannot access the requested data as instructed.",
-  [ErrorCode.OPERATION_UNSUPPORTED]:
+export const ERROR_CODES = [
+  DATA_MISSING_ERROR_CODE,
+  DATA_MALFORMED_ERROR_CODE,
+  DATA_ACCESS_ERROR_CODE,
+  OPERATION_UNSUPPORTED_ERROR_CODE,
+  OPERATION_INSECURE_ERROR_CODE,
+  OPERATION_FAILURE_ERROR_CODE,
+  OPERATION_REDUNDANT_ERROR_CODE,
+] as const;
+
+export const ERROR_CODE_MESSAGES: Record<typeof ERROR_CODES[number], string> = {
+  [DATA_MISSING_ERROR_CODE]: "Failed due to missing data.",
+  [DATA_MALFORMED_ERROR_CODE]: "Failed due to improperly formatted data.",
+  [DATA_ACCESS_ERROR_CODE]: "Cannot access the requested data as instructed.",
+  [OPERATION_UNSUPPORTED_ERROR_CODE]:
     "Could not perform a currently unsupported operation.",
-  [ErrorCode.OPERATION_INSECURE]: "Refused to perform an insecure operation.",
-  [ErrorCode.OPERATION_REDUNDANT]:
+  [OPERATION_INSECURE_ERROR_CODE]: "Refused to perform an insecure operation.",
+  [OPERATION_REDUNDANT_ERROR_CODE]:
     "Refused to re-perform an operation unnecessarily.",
-  [ErrorCode.OPERATION_FAILURE]: "Failed to perform the operation.",
+  [OPERATION_FAILURE_ERROR_CODE]: "Failed to perform the operation.",
 };
 
 export const ERROR_CONTEXT_MAX_SIZE = 100;

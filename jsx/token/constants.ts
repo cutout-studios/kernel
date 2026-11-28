@@ -6,54 +6,66 @@
  * special JSX cases.
  */
 
-/**
- * The different "flavors" of tokens we track when processing JSX.
- *
- * @enum {number}
- */
-export enum TokenType {
-  // -- System --
-  /** Something we haven't recognized yet. */
-  UNKNOWN = 0x00,
-  /** A token generator, used to stream JSX content progressively. */
-  GENERATOR = 0x01,
+// -- System --
+/** Something we haven't recognized yet. */
+export const UNKNOWN_TOKEN = 0x0;
+/** A token generator, used to stream JSX content progressively. */
+export const GENERATOR_TOKEN = 0x1;
 
-  // --- JavaScript Primitives ---
-  /** The literal undefined value. */
-  UNDEFINED = 0x02,
-  /** The literal null value. */
-  NULL = 0x03,
-  /** A simple true/false boolean. */
-  BOOLEAN = 0x04,
-  /** A string value (text content). */
-  STRING = 0x05,
-  /** A number value (integer/float, bigint). */
-  NUMBER = 0x06,
-  /** A JavaScript symbol. */
-  SYMBOL = 0x07,
+// --- JavaScript Primitives ---
+/** The literal undefined value. */
+export const UNDEFINED_TOKEN = 0x2;
+/** The literal null value. */
+export const NULL_TOKEN = 0x3;
+/** A simple true/false boolean. */
+export const BOOLEAN_TOKEN = 0x4;
+/** A string value (text content). */
+export const STRING_TOKEN = 0x5;
+/** A number value (integer/float, bigint). */
+export const NUMBER_TOKEN = 0x6;
+/** A JavaScript symbol. */
+export const SYMBOL_TOKEN = 0x7;
 
-  // --- Complex Types ---
-  /** An array of children or mixed content. */
-  ARRAY = 0x08,
-  /** A generic object (usually an attribute container). */
-  OBJECT = 0x09,
-  /** An element function, class, event listener, etc. */
-  FUNCTION = 0x0A,
-  /** An async operation */
-  PROMISE = 0x0B,
+// --- Complex Types ---
+/** An array of children or mixed content. */
+export const ARRAY_TOKEN = 0x8;
+/** A generic object (usually an attribute container). */
+export const OBJECT_TOKEN = 0x9;
+/** An element function, class, event listener, etc. */
+export const FUNCTION_TOKEN = 0xA;
+/** An async operation */
+export const PROMISE_TOKEN = 0xB;
 
-  // --- JSX Structure ---
-  /** Marks the start of a JSX tag (e.g., `<div`). */
-  ELEMENT_OPEN = 0x0C,
-  /** Marks the end of a JSX tag (e.g., `</div>`). */
-  ELEMENT_CLOSE = 0x0D,
-  /** A JSX element attribute (e.g. `class=`). */
-  ATTRIBUTE = 0x0E,
+// --- JSX Structure ---
+/** Marks the start of a JSX tag (e.g., `<div`). */
+export const ELEMENT_OPEN_TOKEN = 0xC;
+/** Marks the end of a JSX tag (e.g., `</div>`). */
+export const ELEMENT_CLOSE_TOKEN = 0xD;
+/** A JSX element attribute (e.g. `class=`). */
+export const ATTRIBUTE_TOKEN = 0xE;
 
-  // -- Other --
-  /** Marks a special unique string for internal tracking. */
-  IDENTIFIER = 0x0F,
-}
+// -- Other --
+/** Marks a special unique string for internal tracking. */
+export const IDENTIFIER_TOKEN = 0xF;
+
+export const TOKENS = [
+  UNKNOWN_TOKEN,
+  GENERATOR_TOKEN,
+  UNDEFINED_TOKEN,
+  NULL_TOKEN,
+  BOOLEAN_TOKEN,
+  STRING_TOKEN,
+  NUMBER_TOKEN,
+  SYMBOL_TOKEN,
+  ARRAY_TOKEN,
+  OBJECT_TOKEN,
+  FUNCTION_TOKEN,
+  PROMISE_TOKEN,
+  ELEMENT_OPEN_TOKEN,
+  ELEMENT_CLOSE_TOKEN,
+  ATTRIBUTE_TOKEN,
+  IDENTIFIER_TOKEN,
+] as const;
 
 // ------------------------------------------------------------
 // Token Structure

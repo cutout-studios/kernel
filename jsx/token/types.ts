@@ -1,5 +1,23 @@
 import type { AnyFunction } from "@internal";
-import type { TokenType } from "./constants.ts";
+import type {
+  ARRAY_TOKEN,
+  ATTRIBUTE_TOKEN,
+  BOOLEAN_TOKEN,
+  ELEMENT_CLOSE_TOKEN,
+  ELEMENT_OPEN_TOKEN,
+  FUNCTION_TOKEN,
+  GENERATOR_TOKEN,
+  IDENTIFIER_TOKEN,
+  NULL_TOKEN,
+  NUMBER_TOKEN,
+  OBJECT_TOKEN,
+  PROMISE_TOKEN,
+  STRING_TOKEN,
+  SYMBOL_TOKEN,
+  TOKENS,
+  UNDEFINED_TOKEN,
+  UNKNOWN_TOKEN,
+} from "./constants.ts";
 
 /**
  * @packageDocumentation
@@ -12,17 +30,17 @@ import type { TokenType } from "./constants.ts";
 /**
  * The fundamental shape of a token in @cutout/kernel: a readonly tuple of `[type, value]`.
  *
- * @template A The token type (default: `XOTokenType.UNKNOWN`).
+ * @template A The token type (default: `XO_UNKNOWN_TOKEN`).
  * @template T The actual data payload (default: `unknown`).
  *
  * @example
  * ```ts
  * // A simple number token
- * const token: AnyXOToken<XOTokenType.NUMBER, number> = [0x03, 42];
+ * const token: AnyXOToken<XO_NUMBER_TOKEN, number> = [0x03, 42];
  * ```
  */
 export type AnyToken<
-  A extends TokenType = TokenType.UNKNOWN,
+  A extends typeof TOKENS[number] = typeof UNKNOWN_TOKEN,
   T = unknown,
 > = [A, T];
 
@@ -44,7 +62,7 @@ export type SystemToken =
  * Handy for initial parsing stages or error fallbacks.
  */
 export type UnknownToken = AnyToken<
-  TokenType.UNKNOWN,
+  typeof UNKNOWN_TOKEN,
   unknown
 >;
 
@@ -56,7 +74,7 @@ export type UnknownToken = AnyToken<
  * It yields OutputXOTokens on demand.
  */
 export type JSXGeneratorToken = AnyToken<
-  TokenType.GENERATOR,
+  typeof GENERATOR_TOKEN,
   () => Generator<OutputToken>
 >;
 
@@ -64,7 +82,7 @@ export type JSXGeneratorToken = AnyToken<
  * A token for a system-level identifier.
  */
 export type IdentifierToken = AnyToken<
-  TokenType.IDENTIFIER,
+  typeof IDENTIFIER_TOKEN,
   string
 >;
 
@@ -87,13 +105,13 @@ export type PrimitiveToken =
 /**
  * A token for the literal null value.
  */
-export type NullToken = AnyToken<TokenType.NULL, null>;
+export type NullToken = AnyToken<typeof NULL_TOKEN, null>;
 
 /**
  * A token for the literal undefined value.
  */
 export type UndefinedToken = AnyToken<
-  TokenType.UNDEFINED,
+  typeof UNDEFINED_TOKEN,
   undefined
 >;
 
@@ -101,7 +119,7 @@ export type UndefinedToken = AnyToken<
  * A token wrapping a boolean value.
  */
 export type BooleanToken = AnyToken<
-  TokenType.BOOLEAN,
+  typeof BOOLEAN_TOKEN,
   boolean
 >;
 
@@ -109,7 +127,7 @@ export type BooleanToken = AnyToken<
  * A token wrapping a standard number.
  */
 export type NumberToken = AnyToken<
-  TokenType.NUMBER,
+  typeof NUMBER_TOKEN,
   number
 >;
 
@@ -117,7 +135,7 @@ export type NumberToken = AnyToken<
  * A token wrapping a string, typically holding text content.
  */
 export type StringToken = AnyToken<
-  TokenType.STRING,
+  typeof STRING_TOKEN,
   string
 >;
 
@@ -125,7 +143,7 @@ export type StringToken = AnyToken<
  * A token for a symbol value.
  */
 export type SymbolToken = AnyToken<
-  TokenType.SYMBOL,
+  typeof SYMBOL_TOKEN,
   symbol
 >;
 
@@ -148,7 +166,7 @@ export type ReferenceToken =
  * Typically used for attribute containers.
  */
 export type ObjectToken = AnyToken<
-  TokenType.OBJECT,
+  typeof OBJECT_TOKEN,
   object
 >;
 
@@ -157,7 +175,7 @@ export type ObjectToken = AnyToken<
  * Usually contains children elements or mixed content.
  */
 export type ArrayToken = AnyToken<
-  TokenType.ARRAY,
+  typeof ARRAY_TOKEN,
   Array<unknown>
 >;
 
@@ -168,7 +186,7 @@ export type ArrayToken = AnyToken<
  * event listener.
  */
 export type FunctionToken = AnyToken<
-  TokenType.FUNCTION,
+  typeof FUNCTION_TOKEN,
   AnyFunction
 >;
 
@@ -177,7 +195,7 @@ export type FunctionToken = AnyToken<
  *
  * This could be an individual token, or, another JSX token stream.
  */
-export type PromiseToken = AnyToken<TokenType.PROMISE, Promise<ValidToken>>;
+export type PromiseToken = AnyToken<typeof PROMISE_TOKEN, Promise<ValidToken>>;
 
 // -----------------------------------------------------------------------------
 // Syntax
@@ -197,7 +215,7 @@ export type SyntaxToken =
  * The value is the tag name (e.g., "div", "MyComponent").
  */
 export type ElementToken = AnyToken<
-  TokenType.ELEMENT_OPEN,
+  typeof ELEMENT_OPEN_TOKEN,
   string
 >;
 
@@ -206,7 +224,7 @@ export type ElementToken = AnyToken<
  * The value is usually the tag name again, matching the opener.
  */
 export type ElementCloseToken = AnyToken<
-  TokenType.ELEMENT_CLOSE,
+  typeof ELEMENT_CLOSE_TOKEN,
   string
 >;
 
@@ -215,7 +233,7 @@ export type ElementCloseToken = AnyToken<
  * Used when we need to explicitly tag a key inside an attribute object.
  */
 export type AttributeToken = AnyToken<
-  TokenType.ATTRIBUTE,
+  typeof ATTRIBUTE_TOKEN,
   string
 >;
 

@@ -1,21 +1,32 @@
 import {
   tokenizeValue,
+  XO_ATTRIBUTE_TOKEN,
+  XO_ELEMENT_OPEN_TOKEN,
+  XO_STRING_TOKEN,
   type XOStringToken,
-  XOTokenType,
 } from "@cutout/kernel/jsx/token";
-import { enumGuardFactory, XOError, XOErrorCode } from "@internal";
+import {
+  unionGuardFactory,
+  XO_DATA_MALFORMED_ERROR_CODE,
+  XO_OPERATION_UNSUPPORTED_ERROR_CODE,
+  XOError,
+} from "@internal";
 
-import { AttributeOperator, Combinator } from "./constants.ts";
+import {
+  ATTRIBUTE_OPERATORS,
+  COMBINATORS,
+  DESCENDANT_COMBINATOR,
+} from "./constants.ts";
 import type { AttributeSelector, Selector } from "./types.ts";
 
 /**
  * Creates a JSX selector.
- * @param query The selector string to convert into an object.
- * @returns The list of unserialized selector objects.
+ * @param query The selector string to convert into a selector object.
+ * @returns The list of selector objects.
  */
 export const create = (query: string): Selector[] => {
   if (/[:@]/.test(query)) {
-    throw new XOError(XOErrorCode.OPERATION_UNSUPPORTED);
+    throw new XOError(XO_OPERATION_UNSUPPORTED_ERROR_CODE);
   }
 
   const listRegex = /([^,]+)(?:,|$)/g;
@@ -34,10 +45,10 @@ export const create = (query: string): Selector[] => {
     // ISSUE(#100): properly resolve CSS combinators (right-most first)
     while ((rawSubquery = combinatorRegex.exec(statement)) !== null) {
       const result = _parseSubqueryMatch(rawSubquery);
-      pointer = pointer ? (pointer.child = result) : (root = result);
+      pointer = pointer ? (pointer[3] = result) : (root = result);
     }
 
-    if (!root) throw new XOError(XOErrorCode.DATA_MALFORMED);
+    if (!root) throw new XOError(XO_DATA_MALFORMED_ERROR_CODE);
     selectors.push(root);
   }
 
@@ -45,13 +56,13 @@ export const create = (query: string): Selector[] => {
 };
 
 // ISSUE(#97): properly handle CSS.escape'd characters
-const _isCombinator = enumGuardFactory(Combinator);
+const _isCombinator = unionGuardFactory(COMBINATORS);
 function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
   const { c: rawCombinator, s: subquery } = groups!;
   const combinator = rawCombinator?.trim() ||
-    (rawCombinator ? Combinator.DESCENDANT : undefined);
+    (rawCombinator ? DESCENDANT_COMBINATOR : undefined);
 
-  const result: Selector = { attributes: [] };
+  const result: Selector = [];
   let piece: RegExpExecArray | null;
 
   const subqueryRegex =
@@ -59,30 +70,32 @@ function _parseSubqueryMatch({ groups }: RegExpExecArray): Selector {
 
   while ((piece = subqueryRegex.exec(subquery)) !== null) {
     const { t: tag, i: id, c: className, a: attribute } = piece.groups!;
-    if (tag) result.tag = [XOTokenType.ELEMENT_OPEN, tag];
+    if (id || className || attribute) result[1] ??= [];
+
+    if (tag) result[0] = [XO_ELEMENT_OPEN_TOKEN, tag];
     else if (id) {
-      result.attributes.push({
-        key: [XOTokenType.ATTRIBUTE, "id"],
-        value: [XOTokenType.STRING, id],
-      });
+      result[1]!.push([
+        [XO_ATTRIBUTE_TOKEN, "id"],
+        [XO_STRING_TOKEN, id],
+      ]);
     } else if (className) {
-      result.attributes.push({
-        key: [XOTokenType.ATTRIBUTE, "class"],
-        value: [XOTokenType.STRING, className],
-      });
+      result[1]!.push([
+        [XO_ATTRIBUTE_TOKEN, "class"],
+        [XO_STRING_TOKEN, className],
+      ]);
     } else if (attribute) {
       const parsed = _parseAttribute(attribute);
-      if (parsed) result.attributes.push(parsed);
+      if (parsed) result[1]!.push(parsed);
     }
   }
 
-  if (_isCombinator(combinator)) result.combinator = combinator;
-  else if (combinator) throw new XOError(XOErrorCode.DATA_MALFORMED);
+  if (_isCombinator(combinator)) result[2] = combinator;
+  else if (combinator) throw new XOError(XO_DATA_MALFORMED_ERROR_CODE);
 
   return result;
 }
 
-const _isAttributeOperator = enumGuardFactory(AttributeOperator);
+const _isAttributeOperator = unionGuardFactory(ATTRIBUTE_OPERATORS);
 function _parseAttribute(
   rawAttributeText: string,
 ): AttributeSelector | undefined {
@@ -92,13 +105,13 @@ function _parseAttribute(
   if (!attributeMatch?.groups) return;
   const { k: key, v: value, o: operator, c: casing } = attributeMatch.groups;
   if (!key) return;
-  const result: AttributeSelector = { key: [XOTokenType.ATTRIBUTE, key] };
+  const result: AttributeSelector = [[XO_ATTRIBUTE_TOKEN, key]];
   if (value) {
-    result.value = tokenizeValue(
+    result[1] = tokenizeValue(
       value.replace(/^["']|["']$/g, ""),
     ) as XOStringToken;
   }
-  if (casing) result.caseSensitive = casing === "s";
-  if (_isAttributeOperator(operator)) result.operator = operator;
+  if (_isAttributeOperator(operator)) result[2] = operator;
+  if (casing) result[3] = casing === "s";
   return result;
 }

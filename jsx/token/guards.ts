@@ -5,10 +5,24 @@
  */
 
 import {
+  ARRAY_TOKEN,
+  ATTRIBUTE_TOKEN,
+  BOOLEAN_TOKEN,
+  ELEMENT_CLOSE_TOKEN,
+  ELEMENT_OPEN_TOKEN,
+  FUNCTION_TOKEN,
+  GENERATOR_TOKEN,
+  NULL_TOKEN,
+  NUMBER_TOKEN,
+  OBJECT_TOKEN,
+  PROMISE_TOKEN,
+  STRING_TOKEN,
+  SYMBOL_TOKEN,
   TOKEN_LENGTH,
   TOKEN_TYPE_INDEX,
   TOKEN_VALUE_INDEX,
-  TokenType,
+  UNDEFINED_TOKEN,
+  UNKNOWN_TOKEN,
 } from "./constants.ts";
 import type {
   JSXGeneratorToken,
@@ -40,31 +54,31 @@ export const isOutputToken = (
   if (value.length !== TOKEN_LENGTH) return false;
 
   switch (value[TOKEN_TYPE_INDEX]) {
-    case TokenType.NUMBER:
+    case NUMBER_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "number" ||
         typeof value[TOKEN_VALUE_INDEX] === "bigint";
-    case TokenType.ARRAY:
+    case ARRAY_TOKEN:
       return Array.isArray(value[TOKEN_VALUE_INDEX]);
-    case TokenType.BOOLEAN:
+    case BOOLEAN_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "boolean";
-    case TokenType.NULL:
+    case NULL_TOKEN:
       return value[TOKEN_VALUE_INDEX] === null;
-    case TokenType.OBJECT:
+    case OBJECT_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "object";
-    case TokenType.FUNCTION:
+    case FUNCTION_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "function";
-    case TokenType.PROMISE:
+    case PROMISE_TOKEN:
       return value[TOKEN_VALUE_INDEX] instanceof Promise;
-    case TokenType.ATTRIBUTE:
-    case TokenType.ELEMENT_OPEN:
-    case TokenType.ELEMENT_CLOSE:
-    case TokenType.STRING:
+    case ATTRIBUTE_TOKEN:
+    case ELEMENT_OPEN_TOKEN:
+    case ELEMENT_CLOSE_TOKEN:
+    case STRING_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "string";
-    case TokenType.SYMBOL:
+    case SYMBOL_TOKEN:
       return typeof value[TOKEN_VALUE_INDEX] === "symbol";
-    case TokenType.UNDEFINED:
+    case UNDEFINED_TOKEN:
       return value[TOKEN_VALUE_INDEX] === undefined;
-    case TokenType.UNKNOWN:
+    case UNKNOWN_TOKEN:
       return true;
   }
 
@@ -80,12 +94,12 @@ export const isPrimitiveToken = (value: unknown): value is PrimitiveToken => {
   if (!isOutputToken(value)) return false;
 
   return [
-    TokenType.BOOLEAN,
-    TokenType.NULL,
-    TokenType.NUMBER,
-    TokenType.STRING,
-    TokenType.SYMBOL,
-    TokenType.UNDEFINED,
+    BOOLEAN_TOKEN,
+    NULL_TOKEN,
+    NUMBER_TOKEN,
+    STRING_TOKEN,
+    SYMBOL_TOKEN,
+    UNDEFINED_TOKEN,
   ].includes(value[TOKEN_TYPE_INDEX]);
 };
 
@@ -99,7 +113,7 @@ export const isPromiseToken = (
 ): value is PromiseToken => {
   if (!isOutputToken(value)) return false;
 
-  return value[TOKEN_TYPE_INDEX] === TokenType.PROMISE;
+  return value[TOKEN_TYPE_INDEX] === PROMISE_TOKEN;
 };
 
 /**
@@ -113,7 +127,7 @@ export const isGeneratorToken = (
   if (!Array.isArray(value)) return false;
   if (value.length !== TOKEN_LENGTH) return false;
 
-  return value[0] === TokenType.GENERATOR && isGeneratorFactory(value[1]);
+  return value[0] === GENERATOR_TOKEN && isGeneratorFactory(value[1]);
 };
 
 const isGeneratorFactory = (value: unknown): value is () => Generator => {

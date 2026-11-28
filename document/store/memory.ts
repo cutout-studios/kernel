@@ -1,96 +1,84 @@
-import { type XONullToken, XOTokenType } from "@cutout/kernel/jsx/token";
-import type { Store, TokenPath, TokenSegment } from "./types.ts";
+import { XO_NULL_TOKEN } from "@cutout/kernel/jsx/token";
+import type { Store, StorePath, StoreSegment } from "./types.ts";
 
 type SerializedPathTrie = Map<string, SerializedPathTrie>;
 
-/**
- * A rudimentary memory-only implementation of the XOBackend.
- * It does not persist the data to any disk.
- */
-export class MemoryStore implements Store {
-  /**
-   * Initialize the XOMemoryBackend with a collection of paths.
-   * @param paths The paths to add to the XOMemoryBackend.
-   */
-  constructor(paths?: TokenPath[]) {
-    for (const path of paths ?? []) {
-      this.add(path);
-    }
-  }
+export const createMemoryStore = (paths: StorePath[] = []): Store => {
+  const cache = new Map(),
+    trie = new Map(),
+    add = (path: StorePath) => {
+      cache.clear();
 
-  add(path: TokenPath): XONullToken {
-    this.#scanCache.clear();
+      let pointer = trie;
+      for (const segment of path) {
+        const segmentString = JSON.stringify(segment);
 
-    let pointer = this.#pathTrie;
-    for (const segment of path) {
-      const segmentString = JSON.stringify(segment);
-
-      if (!pointer.has(segmentString)) {
-        pointer.set(segmentString, new Map());
-      }
-
-      pointer = pointer.get(segmentString) as SerializedPathTrie;
-    }
-
-    return [XOTokenType.NULL, null];
-  }
-
-  list(
-    prefix: TokenPath,
-  ): Generator<TokenPath> | undefined {
-    const cacheKey = JSON.stringify(prefix);
-
-    if (this.#scanCache.has(cacheKey)) {
-      return this.#scanCache.get(cacheKey);
-    }
-
-    const scanRoot = this.#resolvePath(prefix);
-
-    if (!scanRoot) return;
-
-    const result = this.#flatten(scanRoot).reverse();
-
-    this.#scanCache.set(cacheKey, result);
-
-    return (function* () {
-      for (const path of result) yield path;
-    })();
-  }
-
-  #pathTrie: SerializedPathTrie = new Map();
-  #resolvePath(path: TokenPath): SerializedPathTrie | undefined {
-    if (path.length === 0) return this.#pathTrie;
-
-    let pointer: SerializedPathTrie | undefined = this.#pathTrie;
-    for (const segment of path) {
-      pointer = pointer.get(JSON.stringify(segment));
-
-      if (pointer === undefined) return;
-    }
-
-    return pointer;
-  }
-
-  #scanCache = new Map();
-  #flatten(root: SerializedPathTrie): TokenPath[] {
-    const result: TokenPath[] = [];
-
-    const stack: [TokenSegment[], SerializedPathTrie][] = [[[], root]];
-    while (stack.length) {
-      const [currentKeyPath, currentSubtrie] = stack.pop() ?? [];
-
-      if (!currentKeyPath || !currentSubtrie) continue;
-
-      for (const [key, value] of currentSubtrie.entries()) {
-        if (value.size) {
-          stack.push([[...currentKeyPath, JSON.parse(key)], value]);
-          continue;
+        if (!pointer.has(segmentString)) {
+          pointer.set(segmentString, new Map());
         }
 
-        result.push([...currentKeyPath, JSON.parse(key)]);
+        pointer = pointer.get(segmentString) as SerializedPathTrie;
       }
-    }
 
-    return result;
+      return [XO_NULL_TOKEN, null];
+    },
+    list = (prefix: StorePath) => {
+      const cacheKey = JSON.stringify(prefix);
+
+      if (cache.has(cacheKey)) return cache.get(cacheKey);
+
+      const scanRoot = _resolvePath(prefix, trie);
+
+      if (!scanRoot) return;
+
+      const result = _flatten(scanRoot).reverse();
+
+      cache.set(cacheKey, result);
+
+      return (function* () {
+        for (const path of result) yield path;
+      })();
+    };
+
+  for (const path of paths) add(path);
+
+  return [add, list];
+};
+
+function _resolvePath(
+  path: StorePath,
+  root: Map,
+): SerializedPathTrie | undefined {
+  if (path.length === 0) return root;
+
+  let pointer: SerializedPathTrie | undefined = root;
+  for (const segment of path) {
+    pointer = pointer.get(JSON.stringify(segment));
+
+    if (pointer === undefined) return;
   }
+
+  return pointer;
+}
+
+function _flatten(root: SerializedPathTrie): StorePath[] {
+  const result: StorePath[] = [];
+
+  const stack: [StoreSegment[], SerializedPathTrie][] = [[[], root]];
+  while (stack.length) {
+    const [currentKeyPath, currentSubtrie] = stack.pop() ?? [];
+
+    if (!currentKeyPath || !currentSubtrie) continue;
+
+    for (const [key, value] of currentSubtrie.entries()) {
+      if (value.size) {
+        stack.push([[...currentKeyPath, JSON.parse(key)], value]);
+        continue;
+      }
+
+      result.push([...currentKeyPath, JSON.parse(key)]);
+    }
+  }
+
+  return result;
 }

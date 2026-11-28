@@ -8,15 +8,16 @@ core=$(size internal/module.ts)
 printf '%8s B  %s\n' "$core" "internal/module.ts"
 
 entrypoints=(
-  jsx/projection/module.ts
-  jsx/token/module.ts
   jsx/module.ts
-  document/store/module.ts
-  document/module.ts
+  jsx/token/module.ts
+  jsx/projection/module.ts
   selector/module.ts
+  document/module.ts
+  document/store/module.ts
+  all.module.ts
 )
 
 for m in "${entrypoints[@]}"; do
-  s=$(size "$m" --external @internal)
+  s=$(size "$m")
   printf '%8s B  %s\n' "$s" "$m"
 done

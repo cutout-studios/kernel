@@ -4,13 +4,15 @@
   "exports": {
     "./document": "./document/module.ts",
     "./document/store": "./document/store/module.ts",
-    // "./element": "./element/module.ts",
-    // "./element/stylesheet": "./element/stylesheet/module.ts",
+    "./element": "./element/module.ts",
+    "./element/stylesheet": "./element/stylesheet/module.ts",
+    "./jsx": "./jsx/module.ts",
     "./jsx-runtime": "./jsx/module.ts",
     "./jsx/jsx-runtime": "./jsx/module.ts",
     "./jsx/projection": "./jsx/projection/module.ts",
     "./jsx/token": "./jsx/token/module.ts",
     // "./server": "./server/module.ts",
+    // "./server/response": "./server/response/module.ts",
     "./selector": "./selector/module.ts"
   },
   "fmt": {
@@ -32,6 +34,7 @@
     "@std/testing": "jsr:@std/testing"
   },
   "tasks": {
-    "docs:lint": "deno doc --lint ./**/module.ts"
+    "docs:lint": "deno doc --lint ./**/module.ts",
+    "bundle:size": "bash ./.github/workflows/scripts/getBundleSizes.sh"
   }
 }

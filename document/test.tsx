@@ -1,19 +1,20 @@
 /** @jsxImportSource @cutout/kernel */
 
-import { XOMemoryStore } from "@cutout/kernel/document/store";
 import { rawText } from "@cutout/kernel/jsx/projection";
 import { createSelector } from "@cutout/kernel/selector";
 import { assertSnapshot } from "@std/testing/snapshot";
 
 import { create } from "./create.ts";
+import { prepend } from "./prepend.ts";
+import { query } from "./query.ts";
 
 const TEST_MODULE = "document";
 
 Deno.test(TEST_MODULE, async (test) => {
-  const store = create({ store: new XOMemoryStore() });
-  const selector = createSelector("user#1");
+  const document = create(), selector = createSelector("user#1");
 
-  store.append(
+  prepend(
+    document,
     <>
       <user id={1}>
         <username>Bob</username>
@@ -24,37 +25,40 @@ Deno.test(TEST_MODULE, async (test) => {
     </>,
   );
 
-  await assertSnapshot(test, rawText(store.select(selector)[0]));
+  await assertSnapshot(test, rawText(query(document, selector)));
 
-  store.append(
+  prepend(
+    document,
     <user id={1}>
       <username>Bobby</username>
     </user>,
   );
 
   // Same selector, but returns "Bobby" now.
-  await assertSnapshot(test, rawText(store.select(selector)[0]));
+  await assertSnapshot(test, rawText(query(document, selector)));
 });
 
 Deno.test(`${TEST_MODULE} — multiple children`, async (test) => {
-  const store = create({ store: new XOMemoryStore() });
+  const document = create();
   const selector = createSelector("user#1");
 
-  store.append(
+  prepend(
+    document,
     <user id={1}>
       <username>Bob</username>
       <email>bob@example.com</email>
       <role>admin</role>
     </user>,
   );
-  await assertSnapshot(test, rawText(store.select(selector)[0]));
+  await assertSnapshot(test, rawText(query(document, selector)));
 });
 
 Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
-  const store = create({ store: new XOMemoryStore() });
+  const document = create();
   const selector = createSelector("org#1");
 
-  store.append(
+  prepend(
+    document,
     <org id={1}>
       <team>
         <member>
@@ -64,16 +68,17 @@ Deno.test(`${TEST_MODULE} — deep nesting`, async (test) => {
     </org>,
   );
 
-  await assertSnapshot(test, rawText(store.select(selector)[0]));
+  await assertSnapshot(test, rawText(query(document, selector)));
 });
 
 Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
-  const document = create({ store: new XOMemoryStore() });
+  const document = create();
   const employees = createSelector(".employee");
   const admins = createSelector(".admin");
   const employeeAdmins = createSelector(".employee.admin");
 
-  document.append(
+  prepend(
+    document,
     <>
       <user class="employee">
         <username>Bob</username>
@@ -89,25 +94,26 @@ Deno.test(`${TEST_MODULE} — class selector`, async (test) => {
 
   await assertSnapshot(
     test,
-    document.select(employees).map((jsx) => rawText(jsx)),
+    query(document, employees).map((jsx) => rawText(jsx)),
   );
 
   await assertSnapshot(
     test,
-    document.select(admins).map((jsx) => rawText(jsx)),
+    query(document, admins).map((jsx) => rawText(jsx)),
   );
 
   await assertSnapshot(
     test,
-    document.select(employeeAdmins).map((jsx) => rawText(jsx)),
+    query(document, employeeAdmins).map((jsx) => rawText(jsx)),
   );
 });
 
 Deno.test(`${TEST_MODULE} — HTML`, async (test) => {
-  const document = create({ store: new XOMemoryStore() });
+  const document = create();
   const headerSelector = createSelector("header");
 
-  document.append(
+  prepend(
+    document,
     <html>
       <head>
         <title>Hello, World!</title>
@@ -122,5 +128,5 @@ Deno.test(`${TEST_MODULE} — HTML`, async (test) => {
     </html>,
   );
 
-  await assertSnapshot(test, rawText(document.select(headerSelector)[0]));
+  await assertSnapshot(test, query(document, headerSelector));
 });
